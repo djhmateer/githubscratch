@@ -1,0 +1,17 @@
+﻿@model WebApplication3.Controllers.SearchResult
+
+<h1>Results xx</h1>
+
+<!-- display images-->
+
+<table>
+    @foreach (var item in Model.artists.items) {
+        <tr>
+            <td>@item.name</td>
+            @if (item.images.Count == 4) {
+                <td><img src="@item.images[2].url" width="200" /></td>
+            }
+            
+        </tr>
+    }
+</table>
