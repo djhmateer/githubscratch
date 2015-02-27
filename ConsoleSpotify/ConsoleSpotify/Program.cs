@@ -13,7 +13,7 @@ namespace ConsoleSpotify {
             var uri = "https://api.spotify.com/v1/search?q=queen&type=artist";
 
             var request = (HttpWebRequest)WebRequest.Create(uri);
-            //request.Accept = "application/json";
+            request.Accept = "application/json";
 
             var response = (HttpWebResponse)request.GetResponse();
 
@@ -27,10 +27,11 @@ namespace ConsoleSpotify {
             //var searchResult = JsonConvert.DeserializeObject<SearchResult>(json);
             //foreach (var item in searchResult.artists.items) {
             //    Console.WriteLine(item.name);
-            //    //if (item.images.Count > 0)
-            //    //    Console.WriteLine(item.images[0].url);
+            //    if (item.images.Count > 0)
+            //        Console.WriteLine(item.images[0].url);
             //}
 
+            Console.ReadLine();
         }
     }
 

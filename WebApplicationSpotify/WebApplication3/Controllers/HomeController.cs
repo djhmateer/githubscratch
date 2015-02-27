@@ -9,8 +9,6 @@ using System.Web.Mvc;
 
 namespace WebApplication3.Controllers {
     public class HomeController : Controller {
-        //string connectionString = ConfigurationManager.ConnectionStrings["DaveTestConnection"].ConnectionString;
-
         public ActionResult Index() {
             // Search for queen and render images 
             var uri = "https://api.spotify.com/v1/search?q=queen&type=artist";
@@ -27,24 +25,8 @@ namespace WebApplication3.Controllers {
             }
 
             var searchResult = JsonConvert.DeserializeObject<SearchResult>(json);
-
-
-            // Save name and popularity to db
-            //using (var connection = new SqlConnection(connectionString))
-            //using (var command = new SqlCommand(null, connection)) {
-            //    connection.Open();
-
-            //    // loop through all results and save
-            //    foreach (var artist in searchResult.artists.items) {
-            //        command.CommandText = String.Format("INSERT INTO Thing(Name, Popularity) VALUES (@Name, @Popularity)");
-            //        command.Parameters.Clear();
-            //        command.Parameters.AddWithValue("@Name", artist.name);
-            //        command.Parameters.AddWithValue("@Popularity", artist.popularity);
-            //        command.ExecuteNonQuery();
-            //    }
-            //}
+            
             return View(searchResult);
-
         }
     }
 
