@@ -83,8 +83,6 @@ namespace WebOAuth.Controllers {
         
     }
 
-
-
     public class SpotifyHelper {
         public string CallSpotifyAPIPassingToken(string access_token, string url) {
             var client = new HttpClient();
