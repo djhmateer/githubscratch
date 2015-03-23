@@ -22,17 +22,60 @@ namespace ConsoleSpotify {
                 json = streamReader.ReadToEnd();
             }
 
-            Console.WriteLine(json);
+            //Console.WriteLine(json);
 
-            //var searchResult = JsonConvert.DeserializeObject<SearchResult>(json);
-            //foreach (var item in searchResult.artists.items) {
-            //    Console.WriteLine(item.name);
-            //    if (item.images.Count > 0)
-            //        Console.WriteLine(item.images[0].url);
-            //}
+            var searchResult = JsonConvert.DeserializeObject<SearchResult2>(json);
+            foreach (var item in searchResult.artists.items) {
+                Console.WriteLine(item.name);
+                if (item.images.Count > 0)
+                    Console.WriteLine(item.images[0].url);
+            }
 
             Console.ReadLine();
         }
+    }
+
+    public class SearchResult2 {
+        public class ExternalUrls {
+            public string spotify { get; set; }
+        }
+
+        public class Followers {
+            public object href { get; set; }
+            public int total { get; set; }
+        }
+
+        public class Item {
+            public ExternalUrls external_urls { get; set; }
+            public Followers followers { get; set; }
+            public List<object> genres { get; set; }
+            public string href { get; set; }
+            public string id { get; set; }
+            public List<Image> images { get; set; }
+            public string name { get; set; }
+            public int popularity { get; set; }
+            public string type { get; set; }
+            public string uri { get; set; }
+        }
+
+        public class Image {
+            public string height { get; set; }
+            public string url { get; set; }
+            public string width { get; set; }
+
+        }
+
+        public class Artists {
+            public string href { get; set; }
+            public List<Item> items { get; set; }
+            public int limit { get; set; }
+            public string next { get; set; }
+            public int offset { get; set; }
+            public object previous { get; set; }
+            public int total { get; set; }
+        }
+
+        public Artists artists { get; set; }
     }
 
     public class SearchResult {
