@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -9,11 +8,10 @@ namespace ConsoleApplication9 {
     class Program {
         static void Main() {
             //explore async/await for when I do many API calls
-
             // what if there is an error?
 
-            Sync();
-            //Async();
+            //Sync();
+            Async();
             Console.WriteLine("done");
         }
 
