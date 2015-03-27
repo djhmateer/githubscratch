@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.Net;
+using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Net.Http;
 
@@ -6,41 +8,53 @@ namespace ConsoleApplication10 {
     class NetworkStuff {
         //http://blogs.msdn.com/b/henrikn/archive/2012/02/16/httpclient-is-here.aspx
         //http://blogs.msdn.com/b/webdev/archive/2012/08/26/asp-net-web-api-and-httpclient-samples.aspx
-        static string _address = "http://api.worldbank.org/countries?format=json";
+        //static string _address = "http://api.worldbank.org/countries?format=json";
+        //static string _address = "http://www.programgood.netXXXX/CategoryView,category,c.aspx";
 
+        
+
+        // davemateeroutlook
+        //9CO7ZPJ3MTA2LGSUN 
+        private static string _address = "http://developer.echonest.com/api/v4/artist/biographies?api_key=9CO7ZPJ3MTA2LGSUN&id=spotify:artist:4Z8W4fKeB5YxbusRsdQVPb";
+
+        // this is their dev API key
+        //private static string _address = "http://developer.echonest.com/api/v4/artist/biographies?api_key=FILDTEOIK2HBORODV&id=spotify:artist:4Z8W4fKeB5YxbusRsdQVPb";
         static void Main() {
-            RunClient();
-            Console.WriteLine("Hit ENTER to exit...");
+            ServicePointManager.DefaultConnectionLimit = 5;
+            const int n = 20;
+            var tasks = new Task<string>[n];
+            for (int i = 0; i < n; i++) {
+                tasks[i] = CallAPI(i);
+            }
+
+            Task.WaitAll(tasks);
+            Console.WriteLine("done");
             Console.ReadLine();
         }
 
-        private static async void RunClient() {
-            // Create an HttpClient instance
-            HttpClient client = new HttpClient();
+        static async Task<string> CallAPI(int i){
+            var keepTrying = true;
+            while (keepTrying){
+                try{
+                    var client = new HttpClient();
 
-            // Send a request asynchronously and continue when complete
-            HttpResponseMessage response = await client.GetAsync(_address);
+                    HttpResponseMessage response = await client.GetAsync(_address);
+                    response.EnsureSuccessStatusCode();
 
-            // Check that response was successful or throw exception
-            response.EnsureSuccessStatusCode();
-
-            // Read response asynchronously as JToken and write out top facts for each country
-            JArray content = await response.Content.ReadAsAsync<JArray>();
-
-            Console.WriteLine("First 50 countries listed by The World Bank...");
-            foreach (var country in content[1]) {
-                Console.WriteLine("{0}, Capital: {1}",
-                    country.Value<string>("name"),
-                    country.Value<string>("capitalCity")
-                    );
-                //Console.WriteLine("   {0}, Country Code: {1}, Capital: {2}, Latitude: {3}, Longitude: {4}",
-                //    country.Value<string>("name"),
-                //    country.Value<string>("iso2Code"),
-                //    country.Value<string>("capitalCity"),
-                //    country.Value<string>("latitude"),
-                //    country.Value<string>("longitude"));
+                    var result = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine(i + result.Substring(0, 100));
+                    keepTrying = false;
+                    return result;
+                }
+                catch (HttpRequestException hre){
+                    Console.WriteLine(i + hre.Message);
+                    System.Threading.Thread.Sleep(500);
+                }
+                catch (Exception ex){
+                    Console.WriteLine("here" + i + ex.Message);
+                }
             }
+            return null;
         }
-
     }
 }
