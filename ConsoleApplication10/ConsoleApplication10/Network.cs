@@ -28,7 +28,6 @@ namespace ConsoleApplication10 {
         static async Task<int> Something2() {
             await Task.Run(() => System.Threading.Thread.Sleep(2000));
             Console.WriteLine("exit something2");
-            throw new Exception("from something2");
             return 2;
         }
 
@@ -39,18 +38,26 @@ namespace ConsoleApplication10 {
             // this blocks
             //await Task.Run(() => System.Threading.Thread.Sleep(4000));
 
+
             var t1 = DoTaskAsync("t1.1", 3000);
             var t2 = DoTaskAsync("t1.2", 2000);
             var t3 = DoTaskAsync("t1.3", 1000);
             Task<int> t5 = Something2();
+            Task<int> t6 = Something2();
 
-            // seems to accomplish the same thing
-            // but don't have access to the task.. for error handling?
-            int result = await Task.Run(() => Something());
+        //http://blog.stephencleary.com/2012/02/async-and-await.html - **HERE** grok**
             await t1;
             await t2;
             await t3;
             await t5;
+            await t6;
+
+            // seems to accomplish the same thing
+            // but don't have access to the task.. for error handling?
+            // no this waits for everything above to finish
+            Console.WriteLine("here");
+            int result = await Task.Run(() => Something());
+            int result2 = await Task.Run(() => Something());
             
 
             Console.WriteLine("DoWork1 results: {0}", String.Join(", ", t1.Result, t2.Result, t3.Result, result, t5.Result));
