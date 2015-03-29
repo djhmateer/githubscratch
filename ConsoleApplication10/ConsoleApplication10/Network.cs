@@ -8,13 +8,55 @@ using System.Net.Http;
 
 namespace ConsoleApplication10 {
     class NetworkStuff {
+        static void Main(){
+            var t = MainA();
+            t.Wait();
+        }
+
+        static async Task MainA(){
+            var sw = new Stopwatch();
+            sw.Start();
+            var t1 = DoSomething("t1", 4000);
+            var t2 = DoSomething("t2", 3000);
+            var t3 = DoSomethingTaskRun("t3 Sleep", 2000);
+            var t4 = Task.Delay(6000);
+            //var t5 = await new Task(() => ));
+            // seems to 'run' all the awaits first.. so doesn't matter the order
+            // 'await' the execution of the Task  .. end of the state machine?
+            // HERE **** - where put console writelines???
+            await t1;
+            await t2;
+            await t3;
+            await t4;
+            Console.WriteLine("Done: {0}", String.Join(", ", t1.Result, t2.Result, t3.Result));
+            Console.WriteLine("Total: " + sw.ElapsedMilliseconds);
+        }
+
+        static async Task<string> DoSomething(string name, int timeout){
+            var sw = new Stopwatch();
+            sw.Start();
+            await Task.Delay(timeout);
+            var message = "Exit " + name + " in: " + sw.ElapsedMilliseconds;
+            Console.WriteLine(message);
+            return message;
+        }
+
+        static async Task<string> DoSomethingTaskRun(string name, int timeout) {
+            var sw = new Stopwatch();
+            sw.Start();
+            // Await the execution until the sleep completes
+            await Task.Run(() => System.Threading.Thread.Sleep(timeout));
+            var message = "Exit " + name + " in: " + sw.ElapsedMilliseconds;
+            Console.WriteLine(message);
+            return message;
+        }
+
+
         //http://stackoverflow.com/questions/18310996/why-should-i-prefer-single-await-task-whenall-over-multiple-awaits
         static async Task<string> DoTaskAsync(string name, int timeout) {
             var start = DateTime.Now;
             Console.WriteLine("Enter {0}, {1}", name, timeout);
             await Task.Delay(timeout);
-
-            //System.Threading.Thread.Sleep(timeout);
             Console.WriteLine("Exit {0}, {1}", name, (DateTime.Now - start).TotalMilliseconds);
             return name;
         }
@@ -35,17 +77,13 @@ namespace ConsoleApplication10 {
             var sw = new Stopwatch();
             sw.Start();
 
-            // this blocks
-            //await Task.Run(() => System.Threading.Thread.Sleep(4000));
-
-
-            var t1 = DoTaskAsync("t1.1", 3000);
-            var t2 = DoTaskAsync("t1.2", 2000);
-            var t3 = DoTaskAsync("t1.3", 1000);
+            var t1 = DoTaskAsync("t1", 3000);
+            var t2 = DoTaskAsync("t2", 2000);
+            var t3 = DoTaskAsync("t3", 1000);
             Task<int> t5 = Something2();
             Task<int> t6 = Something2();
 
-        //http://blog.stephencleary.com/2012/02/async-and-await.html - **HERE** grok**
+            //http://blog.stephencleary.com/2012/02/async-and-await.html - **HERE** grok**outl
             await t1;
             await t2;
             await t3;
@@ -77,7 +115,7 @@ namespace ConsoleApplication10 {
         }
 
 
-        static void Main(string[] args) {
+        static void Main4(string[] args) {
 
             //Task.WhenAll(DoWork2()).Wait();
             //Task.WhenAll(DoWork1()).Wait();
