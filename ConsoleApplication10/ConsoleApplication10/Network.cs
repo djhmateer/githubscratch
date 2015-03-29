@@ -8,28 +8,41 @@ using System.Net.Http;
 
 namespace ConsoleApplication10 {
     class NetworkStuff {
-        static void Main(){
-            var t = MainA();
+        static void Main5(){
+            //MainA().Wait();
+            Task t = MainA();
             t.Wait();
         }
 
         static async Task MainA(){
-            var sw = new Stopwatch();
-            sw.Start();
+            var time = DateTime.Now;
             var t1 = DoSomething("t1", 4000);
             var t2 = DoSomething("t2", 3000);
-            var t3 = DoSomethingTaskRun("t3 Sleep", 2000);
+            var t3 = DoSomethingTaskRun("t3", 2000);
             var t4 = Task.Delay(6000);
-            //var t5 = await new Task(() => ));
-            // seems to 'run' all the awaits first.. so doesn't matter the order
-            // 'await' the execution of the Task  .. end of the state machine?
-            // HERE **** - where put console writelines???
+            var t5 = DoSomethingError("t5", 2000);
+
+            // Wait for t1 which is 4s, then t2 and t3 will have finished
             await t1;
+            Console.WriteLine("after t1 - 4s - {0}", Actual(time));
             await t2;
+            Console.WriteLine("after t2 - 3s - {0}", Actual(time));
             await t3;
+            Console.WriteLine("after t3 - 2s - {0}", Actual(time));
+            // after another 2s t4 will have finished
             await t4;
+            Console.WriteLine("after t4 - 6s - {0}", Actual(time));
+            // then immediately t5 will error
+            try {
+                await t5;
+            }
+            catch (Exception ex) {
+                Console.WriteLine("error t5 - 2s - {0} - {1}", Actual(time), ex.Message);
+            }
+
+            // Returning data from an async method
             Console.WriteLine("Done: {0}", String.Join(", ", t1.Result, t2.Result, t3.Result));
-            Console.WriteLine("Total: " + sw.ElapsedMilliseconds);
+            Console.WriteLine("Total: " + Actual(time));
         }
 
         static async Task<string> DoSomething(string name, int timeout){
@@ -49,6 +62,17 @@ namespace ConsoleApplication10 {
             var message = "Exit " + name + " in: " + sw.ElapsedMilliseconds;
             Console.WriteLine(message);
             return message;
+        }
+
+        static async Task<string> DoSomethingError(string name, int timeout) {
+            var sw = new Stopwatch();
+            sw.Start();
+            await Task.Delay(timeout);
+            throw new Exception("test error");
+        }
+
+        static string Actual(DateTime time) {
+            return (DateTime.Now - time).TotalMilliseconds.ToString();
         }
 
 
@@ -189,10 +213,13 @@ namespace ConsoleApplication10 {
             Console.WriteLine("Total: " + elapsedTime);
         }
 
-        static void Main2() {
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
+        static void Main(){
+            Task t = MainAA();
+            t.Wait();
+        }
 
+        static async Task MainAA(){
+            var time = DateTime.Now;
             ServicePointManager.DefaultConnectionLimit = 5;
             const int n = 20;
             var tasks = new Task<string>[n];
@@ -200,13 +227,14 @@ namespace ConsoleApplication10 {
                 tasks[i] = CallAPI(i);
             }
 
-            Task.WaitAll(tasks);
-            Console.WriteLine("done");
-            stopWatch.Stop();
-            TimeSpan ts = stopWatch.Elapsed;
-            string elapsedTime = String.Format("{0:0}", ts.TotalMilliseconds);
-            Console.WriteLine("Whole app Total: " + elapsedTime);
+            for (int i = 0; i < n; i++){
+                // Will await the tasks in order
+                await tasks[i];
+                Console.WriteLine("{0} - {1}",i, Actual(time));
+            }
 
+            //Task.WaitAll(tasks);
+            Console.WriteLine("after all tasks - {0}", Actual(time));
             Console.ReadLine();
         }
 
@@ -215,21 +243,21 @@ namespace ConsoleApplication10 {
             int totalErrors = 0;
             while (keepTrying){
                 try{
-                    var stopWatch = new Stopwatch();
-                    stopWatch.Start();
+                    //var stopWatch = new Stopwatch();
+                    //stopWatch.Start();
                     var client = new HttpClient();
                     HttpResponseMessage response = await client.GetAsync(_address);
                     response.EnsureSuccessStatusCode();
 
                     var result = await response.Content.ReadAsStringAsync();
-                    if (totalErrors > 0)
-                        Console.WriteLine(i + ": " + totalErrors);
-                    Console.WriteLine(i + result.Substring(0, 100));
+                    //if (totalErrors > 0)
+                    //    Console.WriteLine(i + ": " + totalErrors);
+                    //Console.WriteLine(i + result.Substring(0, 100));
                     keepTrying = false;
-                    stopWatch.Stop();
-                    TimeSpan ts = stopWatch.Elapsed;
-                    string elapsedTime = String.Format("{0:0}", ts.TotalMilliseconds);
-                    Console.WriteLine("Total: " + elapsedTime);
+                    //stopWatch.Stop();
+                    //TimeSpan ts = stopWatch.Elapsed;
+                    //string elapsedTime = String.Format("{0:0}", ts.TotalMilliseconds);
+                    //Console.WriteLine("Total: " + elapsedTime);
 
                     return result;
                 }
