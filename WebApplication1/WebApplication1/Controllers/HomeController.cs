@@ -8,7 +8,6 @@ using System.Web.Mvc;
 namespace WebApplication1.Controllers {
     public class HomeController : Controller {
         private static string _address = "http://developer.echonest.com/api/v4/artist/biographies?api_key=9CO7ZPJ3MTA2LGSUN&id=spotify:artist:4Z8W4fKeB5YxbusRsdQVPb";
-        //private static string _address = "http://www.google.com";
 
         public async Task<ActionResult> Index() {
             var time = DateTime.Now;
