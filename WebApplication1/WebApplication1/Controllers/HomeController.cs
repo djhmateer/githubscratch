@@ -11,21 +11,13 @@ namespace WebApplication1.Controllers {
         //private static string _address = "http://www.google.com";
 
         public async Task<ActionResult> Index() {
-            //Task t = MainAA();
-            //t.Wait();
             var time = DateTime.Now;
             ServicePointManager.DefaultConnectionLimit = 5;
-            //var t1 = CallAPI(1);
-            //await t1;
             const int n = 5;
             var tasks = new Task<string>[n];
             for (int i = 0; i < n; i++) {
                 tasks[i] = CallAPI(i);
             }
-
-            //for (int i = 0; i < n; i++) {
-            //    await tasks[i];
-            //}
 
             // as we don't want to wait synchronously for an async method
             await Task.WhenAll();
