@@ -49,29 +49,23 @@ namespace WebApplication1.Controllers {
         public async Task<ActionResult> Index() {
             var time = DateTime.Now;
             ServicePointManager.DefaultConnectionLimit = 5;
-            const int n = 15;
+            const int n = 5;
             var tasks = new Task<string>[n];
             for (int i = 0; i < n; i++) {
                 tasks[i] = CallAPI(i);
             }
 
             // at this point all tasks will be running at the same time
-
-            // await all tasks
-            await Task.WhenAll();
+            await Task.WhenAll(tasks);
             Debug.WriteLine(Actual(time), "After all tasks");
 
             // do stuff
-            // check that all results have been returned!
-
             for (int i = 0; i < n; i++)
             {
                 var things = JsonConvert.DeserializeObject<Thing>(tasks[0].Result);
                 var url = things.response.biographies[6].url; 
                 Debug.WriteLine(url);
             }
-           
-            //ViewBag.stuff = tasks[0].Result;
             return View();
         }
 
@@ -86,7 +80,7 @@ namespace WebApplication1.Controllers {
                 response.EnsureSuccessStatusCode();
                 result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             }
-            Debug.WriteLine(Actual(time), "After " + i);
+            Debug.WriteLine(Actual(time), "Finished " + i);
             return result;
         }
 
