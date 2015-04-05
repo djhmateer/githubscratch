@@ -7,10 +7,12 @@ namespace MicroOrmDemo.DataLayer.Tests {
     [TestFixture]
     public class ContactRepositoryTestsSC{
         ContactRepositorySC repo;
+        ContactRepositorySC repo2;
 
         [SetUp]
         public void Setup(){
             repo = new ContactRepositorySC();
+            repo2 = new ContactRepositorySC();
         }
 
         [Test]
@@ -53,11 +55,8 @@ namespace MicroOrmDemo.DataLayer.Tests {
         [Test]
         public void _03_Find_should_retrieve_existing_entity() {
 
-            // act
-            var contact = repo.Find(id);
-            //var contact = repository.GetFullContact(id);
+            var contact = repo.Get(id);
 
-            // assert
             contact.Should().NotBeNull();
             contact.Id.Should().Be(id);
             contact.FirstName.Should().Be("Joe");
@@ -72,8 +71,7 @@ namespace MicroOrmDemo.DataLayer.Tests {
 
         [Test]
         public void _04_Modify_should_update_existing_entity() {
-            // act
-            var contact = repo.Find(id);
+            var contact = repo.Get(id);
             //var contact = repository.GetFullContact(id);
             contact.FirstName = "Bob";
             //contact.Addresses[0].StreetAddress = "456 Main Street";
@@ -81,9 +79,7 @@ namespace MicroOrmDemo.DataLayer.Tests {
             //repository.Save(contact);
 
             // create a new repository for verification purposes
-            var repository2 = new ContactRepository();
-
-            var modifiedContact = repository2.Find(id);
+            var modifiedContact = repo2.Get(id);
             //var modifiedContact = repository2.GetFullContact(id);
 
             // assert
@@ -93,12 +89,12 @@ namespace MicroOrmDemo.DataLayer.Tests {
 
         [Test]
         public void _05_Delete_should_remove_entity() {
-            repo.Delete(id);
+            var contact = repo.Get(id);
+
+            repo.Delete(contact);
 
             // create a new repository for verification purposes
-            var repository2 = new ContactRepository();
-
-            var deletedEntity = repository2.Find(id);
+            var deletedEntity = repo2.Get(id);
 
             // assert
             deletedEntity.Should().BeNull();

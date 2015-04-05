@@ -35,6 +35,19 @@ namespace MicroOrmDemo.DataLayer {
             }
         }
 
+        public Contact Update(Contact contact){
+            using (var db = GetOpenConnection()) {
+                db.Update(contact);
+                return contact;
+            }
+        }
+
+        public void Delete(Contact contact) {
+            using (var db = GetOpenConnection()) {
+                db.Delete(contact);
+            }
+        }
+
         public List<Contact> GetAll() {
             using (var db = GetOpenConnection()){
                 return db.Query<Contact>("SELECT * FROM Contacts").ToList();
@@ -60,7 +73,7 @@ namespace MicroOrmDemo.DataLayer {
             }
         }
 
-        public Contact Update(Contact contact) {
+        public Contact UpdateOld(Contact contact) {
             using (var db = GetOpenConnection()){
                 var sql =
                     "UPDATE Contacts " +
@@ -75,7 +88,7 @@ namespace MicroOrmDemo.DataLayer {
             }
         }
 
-        public void Delete(int id) {
+        public void DeleteOld(int id) {
             using (var db = GetOpenConnection()){
                 db.Execute("DELETE FROM Contacts WHERE Id = @Id", new{id});
             }
