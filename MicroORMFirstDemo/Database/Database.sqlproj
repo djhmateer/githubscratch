@@ -77,7 +77,6 @@
     <PostDeploy Include="Script.PostDeployment-SeedData.sql" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ContactsDB.publish.xml" />
-    <None Include="ContactsDB2.publish.xml" />
+    <None Include="Database.publish.xml" />
   </ItemGroup>
 </Project>

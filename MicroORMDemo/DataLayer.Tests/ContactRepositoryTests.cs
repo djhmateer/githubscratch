@@ -1,7 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 
 namespace MicroOrmDemo.DataLayer.Tests {
     [TestClass]
@@ -32,7 +32,7 @@ namespace MicroOrmDemo.DataLayer.Tests {
                 Company = "Microsoft",
                 Title = "Developer"
             };
-            Address address = new Address {
+            var address = new Address {
                 AddressType = "Home",
                 StreetAddress = "123 Main Street",
                 City = "Baltimore",
@@ -41,9 +41,9 @@ namespace MicroOrmDemo.DataLayer.Tests {
             };
             contact.Addresses.Add(address);
 
-            // act
-            repository.Add(contact);
-            //repository.Save(contact);
+            //repository.Add(contact);
+            // will save the contact and the address
+            repository.Save(contact);
 
             // assert
             contact.Id.Should().NotBe(0, "because Identity should have been assigned by database.");
@@ -57,8 +57,9 @@ namespace MicroOrmDemo.DataLayer.Tests {
             IContactRepository repository = CreateRepository();
 
             // act
-            var contact = repository.Find(id);
-            //var contact = repository.GetFullContact(id);
+            //var contact = repository.Find(id);
+            // contact and addresses
+            var contact = repository.GetFullContact(id);
 
             // assert
             contact.Should().NotBeNull();
@@ -69,8 +70,8 @@ namespace MicroOrmDemo.DataLayer.Tests {
             contact.Company.Should().Be("Microsoft");
             contact.Title.Should().Be("Developer");
 
-            //contact.Addresses.Count.Should().Be(1);
-            //contact.Addresses.First().StreetAddress.Should().Be("123 Main Street");
+            contact.Addresses.Count.Should().Be(1);
+            contact.Addresses.First().StreetAddress.Should().Be("123 Main Street");
         }
 
         [TestMethod]
@@ -79,21 +80,21 @@ namespace MicroOrmDemo.DataLayer.Tests {
             IContactRepository repository = CreateRepository();
 
             // act
-            var contact = repository.Find(id);
-            //var contact = repository.GetFullContact(id);
+            //var contact = repository.Find(id);
+            var contact = repository.GetFullContact(id);
             contact.FirstName = "Bob";
-            //contact.Addresses[0].StreetAddress = "456 Main Street";
-            repository.Update(contact);
-            //repository.Save(contact);
+            contact.Addresses[0].StreetAddress = "456 Main Street";
+            //repository.Update(contact);
+            repository.Save(contact);
 
             // create a new repository for verification purposes
             IContactRepository repository2 = CreateRepository();
-            var modifiedContact = repository2.Find(id);
-            //var modifiedContact = repository2.GetFullContact(id);
+            //var modifiedContact = repository2.Find(id);
+            var modifiedContact = repository2.GetFullContact(id);
 
             // assert
             modifiedContact.FirstName.Should().Be("Bob");
-            //modifiedContact.Addresses.First().StreetAddress.Should().Be("456 Main Street");
+            modifiedContact.Addresses.First().StreetAddress.Should().Be("456 Main Street");
         }
 
         [TestMethod]

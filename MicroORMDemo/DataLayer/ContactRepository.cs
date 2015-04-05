@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Transactions;
 using Dapper;
 
 namespace MicroOrmDemo.DataLayer {
@@ -24,7 +25,7 @@ namespace MicroOrmDemo.DataLayer {
         }
 
         public Contact Add(Contact contact) {
-            var sql = "INSERT INTO Contacts (FirstName, LastName, Email, Company, Title) VALUES                     (@FirstName, @LastName, @Email, @Company, @Title); " +
+            var sql = "INSERT INTO Contacts (FirstName, LastName, Email, Company, Title) VALUES (@FirstName, @LastName, @Email, @Company, @Title); " +
                        "SELECT CAST(SCOPE_IDENTITY() as int)";
             var id = db.Query<int>(sql, contact).Single();
             contact.Id = id;
@@ -49,16 +50,91 @@ namespace MicroOrmDemo.DataLayer {
             db.Execute("DELETE FROM Contacts WHERE ID = @Id", new {id});
         }
 
-        public Contact GetFullContact(int id) {
-            throw new NotImplementedException();
+        // Multiple select statements
+        public Contact GetFullContact(int id){
+            var sql = "SELECT * FROM Contacts WHERE Id = @Id; " +
+                      "SELECT * From Addresses WHERE ContactID = @Id";
+
+            using (var multipleResults = db.QueryMultiple(sql, new {id})){
+                var contact = multipleResults.Read<Contact>().SingleOrDefault();
+                var addresses = multipleResults.Read<Address>().ToList();
+
+                if (contact != null && addresses != null){
+                    contact.Addresses.AddRange(addresses);
+                }
+
+                return contact;
+            }
         }
 
-        public void Save(Contact contact) {
-            throw new NotImplementedException();
+public void Save(Contact contact)  {
+    using (var txScope = new TransactionScope()){
+        if (contact.IsNew){
+            Add(contact);
+        }
+        else{
+            Update(contact);
+        }
+
+        foreach (var addr in  contact.Addresses.Where(a => !a.IsDeleted)){
+            addr.ContactId = contact.Id;
+
+            if (addr.IsNew){
+                Add(addr);
+            }
+            else{
+                Update(addr);
+            }
+        }
+
+        // if delete an address off an existing contact
+        foreach (var addr in contact.Addresses.Where(a => a.IsDeleted)){
+            db.Execute("DELETE FROM Addresses WHERE Id = @Id", new {addr.Id});
+        }
+
+        txScope.Complete();
+    }
+}
+
+        public Address Add(Address address){
+            var sql = @"
+                        INSERT INTO [dbo].[Addresses]
+                               ([ContactId]
+                               ,[AddressType]
+                               ,[StreetAddress]
+                               ,[City]
+                               ,[StateId]
+                               ,[PostalCode])
+                         VALUES
+                               (@ContactID
+                               ,@AddressType
+                               ,@StreetAddress
+                               ,@City
+                               ,@StateId
+                               ,@PostalCode);" + 
+            "SELECT CAST(SCOPE_IDENTITY() as int)";
+            var id = db.Query<int>(sql, address).Single();
+            address.Id = id;
+            return address;
+        }
+
+        public Address Update(Address address){
+            var sql = @"
+                        UPDATE [dbo].[Addresses]
+                           SET [ContactId] = @ContactId
+                              ,[AddressType] = @AddressType
+                              ,[StreetAddress] = @StreetAddress
+                              ,[City] = @City
+                              ,[StateId] = @StateId
+                              ,[PostalCode] = @PostalCode
+                         WHERE Id = " + address.Id;
+            db.Execute(sql, address);
+            return address;
         }
     }
 
     public class Contact {
+        // So when a new contact is created, a blank list of addresses is created
         public Contact() {
             this.Addresses = new List<Address>();
         }
@@ -72,9 +148,10 @@ namespace MicroOrmDemo.DataLayer {
 
         public List<Address> Addresses { get; private set; }
 
+        // Convenience property
         public bool IsNew {
             get {
-                return this.Id == default(int);
+                return Id == default(int);
             }
         }
     }
@@ -88,9 +165,10 @@ namespace MicroOrmDemo.DataLayer {
         public int StateId { get; set; }
         public string PostalCode { get; set; }
 
+        // Convenience properties
         internal bool IsNew {
             get {
-                return this.Id == default(int);
+                return Id == default(int);
             }
         }
 
