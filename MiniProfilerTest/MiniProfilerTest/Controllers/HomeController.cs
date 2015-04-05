@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Threading;
@@ -35,10 +36,15 @@ namespace MiniProfilerTest.Controllers {
             }
         }
 
+
         private IDbConnection GetOpenConnection() {
-            IDbConnection connection = new SqlConnection(ConfigurationManager.ConnectionStrings["contactsDB"].ConnectionString);
-            connection.Open();
-            return connection;
+            //IDbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["contactsDB"].ConnectionString);
+            DbConnection cnn = new SqlConnection(ConfigurationManager.ConnectionStrings["contactsDB"].ConnectionString);
+            cnn.Open();
+
+            // wrap the connection with a profiling connection that tracks timings 
+            return new StackExchange.Profiling.Data.ProfiledDbConnection(cnn, MiniProfiler.Current);
+            //return connection;
         }
 
         public Contact Get(int id) {
