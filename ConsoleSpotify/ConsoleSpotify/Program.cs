@@ -1,26 +1,24 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Net;
+using System.Net.Http;
+
 
 namespace ConsoleSpotify {
     class Program {
         static void Main() {
-            // So can see the output easily
-            Console.BufferHeight = 32766;
-            Console.BufferWidth = 100;
-            var uri = "https://api.spotify.com/v1/search?q=queen&type=artist";
+            var uri = "https://api.spotify.com/v1/search?q=queen&type=artist&limit=2";
+            var client = new HttpClient();
+            var httpResponse = client.GetAsync(uri);
+            var json = httpResponse.Result.Content.ReadAsStringAsync().Result;
 
-            var request = (HttpWebRequest)WebRequest.Create(uri);
-            request.Accept = "application/json";
+            //var request = (HttpWebRequest)WebRequest.Create(uri);
+            //var response = (HttpWebResponse)request.GetResponse();
 
-            var response = (HttpWebResponse)request.GetResponse();
-
-            string json;
-            using (var streamReader = new StreamReader(response.GetResponseStream())) {
-                json = streamReader.ReadToEnd();
-            }
+            //string json;
+            //using (var streamReader = new StreamReader(response.GetResponseStream())) {
+            //    json = streamReader.ReadToEnd();
+            //}
 
             //Console.WriteLine(json);
 
