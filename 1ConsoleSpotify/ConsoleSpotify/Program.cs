@@ -1,28 +1,31 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-
+using Newtonsoft.Json;
 
 namespace ConsoleSpotify {
     class Program {
         static void Main() {
             var uri = "https://api.spotify.com/v1/search?q=queen&type=artist&limit=2";
             var client = new HttpClient();
+            
+            // Make a call
             var httpResponse = client.GetAsync(uri);
+            // Get the result
             var json = httpResponse.Result.Content.ReadAsStringAsync().Result;
-            Console.WriteLine(json);
-            //var searchResult = JsonConvert.DeserializeObject<SearchResult3>(json);
-            //foreach (var item in searchResult.artists.items) {
-            //    Console.WriteLine(item.name);
-            //    if (item.images.Count > 0)
-            //        Console.WriteLine(item.images[0].url);
-            //}
+            
+            //Console.WriteLine(json);
+
+            var searchResult = JsonConvert.DeserializeObject<SearchResult3>(json);
+            foreach (var item in searchResult.artists.items) {
+                Console.WriteLine(item.name);
+                if (item.images.Count > 0)
+                    Console.WriteLine(item.images[0].url);
+            }
 
             Console.ReadLine();
         }
     }
-
 
     public class SearchResult3 {
         public Artists artists { get; set; }
