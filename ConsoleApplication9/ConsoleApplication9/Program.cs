@@ -8,9 +8,8 @@ namespace ConsoleApplication9 {
     class Program {
         static void Main() {
             //explore async/await for when I do many API calls
-            // what if there is an error?
 
-            //Sync();
+            Sync();
             Async();
             Console.WriteLine("done");
         }
@@ -19,7 +18,7 @@ namespace ConsoleApplication9 {
             var stopWatch = new Stopwatch();
             stopWatch.Start();
             var url = "https://api.spotify.com/v1/albums/?ids=3KuXEGcqLcnEYWnn3OEGy0,0eFHYz8NmK75zSplL5qlfM,0lw68yx3MhKflWFqCsGkIs,0HcHPBu9aaF1MxOiZmUQTl,5eJTvSeghTKoqN3Ly4TqEf,1Dh27pjT3IEdiRG9Se5uQn,6AyUVv7MnxxTuijp4WmrhO";
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < 10; i++) {
                 Console.WriteLine("Starting " + i);
                 HttpWebRequest request = HttpWebRequest.CreateHttp(url);
                 string text;
@@ -28,7 +27,6 @@ namespace ConsoleApplication9 {
                         text = sr.ReadToEnd();
                     }
                 }
-                Console.WriteLine("result of " + i + " " + text.Substring(0,400));
             }
             stopWatch.Stop();
             TimeSpan ts = stopWatch.Elapsed;
@@ -41,7 +39,7 @@ namespace ConsoleApplication9 {
             stopWatch.Start();
             
             ServicePointManager.DefaultConnectionLimit = 50;
-            const int n = 5;
+            const int n = 10;
             Task<string>[] tasks = new Task<string>[n];
             for (int i = 0; i < n; i++) {
                 tasks[i] = CallAPI(i);
@@ -68,7 +66,7 @@ namespace ConsoleApplication9 {
                 }
             }
 
-            Console.WriteLine("CallAPI exit " + i + text.Substring(0,400));
+            //Console.WriteLine("CallAPI exit " + i + text.Substring(0,400));
             return text;
         }
     }

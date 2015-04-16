@@ -17,7 +17,7 @@ namespace MicroOrmDemo.DataLayer {
         public Contact Find(int id) {
             // Use Anonymous types typically
             // SingleOrDefault so if its not found it will return a null
-            return db.Query<Contact>("SELECT * FROM Contacts WHERE Id = @Id", new {Id = id}).SingleOrDefault();
+            return db.Query<Contact>("SELECT * FROM Contacts WHERE Id = @Id", new { Id = id }).SingleOrDefault();
         }
 
         public List<Contact> GetAll() {
@@ -45,21 +45,20 @@ namespace MicroOrmDemo.DataLayer {
             return contact;
         }
 
-        public void Remove(int id)
-        {
-            db.Execute("DELETE FROM Contacts WHERE ID = @Id", new {id});
+        public void Remove(int id) {
+            db.Execute("DELETE FROM Contacts WHERE ID = @Id", new { id });
         }
 
         // Multiple select statements
-        public Contact GetFullContact(int id){
+        public Contact GetFullContact(int id) {
             var sql = "SELECT * FROM Contacts WHERE Id = @Id; " +
                       "SELECT * From Addresses WHERE ContactID = @Id";
 
-            using (var multipleResults = db.QueryMultiple(sql, new {id})){
+            using (var multipleResults = db.QueryMultiple(sql, new { id })) {
                 var contact = multipleResults.Read<Contact>().SingleOrDefault();
                 var addresses = multipleResults.Read<Address>().ToList();
 
-                if (contact != null && addresses != null){
+                if (contact != null && addresses != null) {
                     contact.Addresses.AddRange(addresses);
                 }
 
@@ -67,36 +66,36 @@ namespace MicroOrmDemo.DataLayer {
             }
         }
 
-public void Save(Contact contact)  {
-    using (var txScope = new TransactionScope()){
-        if (contact.IsNew){
-            Add(contact);
-        }
-        else{
-            Update(contact);
-        }
+        public void Save(Contact contact) {
+            using (var txScope = new TransactionScope()) {
+                if (contact.IsNew) {
+                    Add(contact);
+                }
+                else {
+                    Update(contact);
+                }
 
-        foreach (var addr in  contact.Addresses.Where(a => !a.IsDeleted)){
-            addr.ContactId = contact.Id;
+                foreach (var addr in contact.Addresses.Where(a => !a.IsDeleted)) {
+                    addr.ContactId = contact.Id;
 
-            if (addr.IsNew){
-                Add(addr);
+                    if (addr.IsNew) {
+                        Add(addr);
+                    }
+                    else {
+                        Update(addr);
+                    }
+                }
+
+                // if delete an address off an existing contact
+                foreach (var addr in contact.Addresses.Where(a => a.IsDeleted)) {
+                    db.Execute("DELETE FROM Addresses WHERE Id = @Id", new { addr.Id });
+                }
+
+                txScope.Complete();
             }
-            else{
-                Update(addr);
-            }
         }
 
-        // if delete an address off an existing contact
-        foreach (var addr in contact.Addresses.Where(a => a.IsDeleted)){
-            db.Execute("DELETE FROM Addresses WHERE Id = @Id", new {addr.Id});
-        }
-
-        txScope.Complete();
-    }
-}
-
-        public Address Add(Address address){
+        public Address Add(Address address) {
             var sql = @"
                         INSERT INTO [dbo].[Addresses]
                                ([ContactId]
@@ -111,14 +110,14 @@ public void Save(Contact contact)  {
                                ,@StreetAddress
                                ,@City
                                ,@StateId
-                               ,@PostalCode);" + 
+                               ,@PostalCode);" +
             "SELECT CAST(SCOPE_IDENTITY() as int)";
             var id = db.Query<int>(sql, address).Single();
             address.Id = id;
             return address;
         }
 
-        public Address Update(Address address){
+        public Address Update(Address address) {
             var sql = @"
                         UPDATE [dbo].[Addresses]
                            SET [ContactId] = @ContactId
