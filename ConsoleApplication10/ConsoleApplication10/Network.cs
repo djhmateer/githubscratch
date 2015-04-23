@@ -16,7 +16,7 @@ namespace ConsoleApplication10 {
 
         static async Task MainA(){
             var time = DateTime.Now;
-            var t1 = DoSomething("t1", 4000);
+            Task<string> t1 = DoSomething("t1", 4000);
             var t2 = DoSomething("t2", 3000);
             var t3 = DoSomethingTaskRun("t3", 2000);
             var t4 = Task.Delay(6000);
