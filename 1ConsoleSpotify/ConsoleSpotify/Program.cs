@@ -16,16 +16,59 @@ namespace ConsoleSpotify {
 
             //Console.WriteLine(json);
 
-            var searchResult = JsonConvert.DeserializeObject<SearchResult3>(json);
+            var searchResult = JsonConvert.DeserializeObject<SearchResult5>(json);
             foreach (var item in searchResult.artists.items) {
                 Console.WriteLine(item.name);
                 if (item.images.Count > 0)
                     Console.WriteLine(item.images[0].url);
             }
-
             Console.ReadLine();
         }
     }
+
+
+    public class SearchResult5{
+        public Artists artists { get; set; }
+
+        public class Artists{
+            public string href { get; set; }
+            public Item[] items { get; set; }
+            public int limit { get; set; }
+            public string next { get; set; }
+            public int offset { get; set; }
+            public object previous { get; set; }
+            public int total { get; set; }
+        }
+
+        public class Item{
+            public External_Urls external_urls { get; set; }
+            public Followers followers { get; set; }
+            public string[] genres { get; set; }
+            public string href { get; set; }
+            public string id { get; set; }
+            public List<Image> images { get; set; }
+            public string name { get; set; }
+            public int popularity { get; set; }
+            public string type { get; set; }
+            public string uri { get; set; }
+        }
+
+        public class External_Urls{
+            public string spotify { get; set; }
+        }
+
+        public class Followers{
+            public object href { get; set; }
+            public int total { get; set; }
+        }
+
+        public class Image{
+            public int height { get; set; }
+            public string url { get; set; }
+            public int width { get; set; }
+        }
+    }
+
 
 
     public class SearchResult4{
@@ -69,8 +112,6 @@ namespace ConsoleSpotify {
             public int width { get; set; }
         }
     }
-
-
 
     public class SearchResult3 {
         public Artists artists { get; set; }
