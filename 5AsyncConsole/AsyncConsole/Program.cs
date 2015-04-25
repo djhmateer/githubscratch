@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace AsyncConsole {
     class Program {
         static void Main() {
-            // To show things hapenning in parallel
+            // To show things happening in parallel
             MainA().Wait();
         }
 

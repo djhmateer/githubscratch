@@ -12,7 +12,7 @@ namespace WebApplication1.Controllers {
 
         public async Task<ActionResult> Index() {
             var time = DateTime.Now;
-            ServicePointManager.DefaultConnectionLimit = 10;
+            ServicePointManager.DefaultConnectionLimit = 5;
             const int n = 5;
             var tasks = new Task<string>[n];
             for (int i = 0; i < n; i++) {
