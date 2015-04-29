@@ -50,7 +50,10 @@
   <ItemGroup>
     <Compile Include="DashboardPage.cs" />
     <Compile Include="Driver.cs" />
+    <Compile Include="ListPostsPage.cs" />
     <Compile Include="LoginPage.cs" />
+    <Compile Include="NewPostPage.cs" />
+    <Compile Include="PostPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
