@@ -1,14 +1,11 @@
-﻿using System.Threading;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium;
+using System;
 
 namespace WordPressAutomation {
     public class NewPostPage {
         public static void GoTo(){
-            var menuPosts = Driver.Instance.FindElement(By.Id("menu-posts"));
-            menuPosts.Click();
-
-            var addNew = Driver.Instance.FindElement(By.LinkText("Add New"));
-            addNew.Click();
+            // Refactor: Should we make a general menu navigation?
+            LeftNavigation.Posts.AddNew.Select();
         }
 
         public static CreatePostCommand CreatePost(string title){
@@ -22,7 +19,12 @@ namespace WordPressAutomation {
         }
 
         public static bool IsInEditMode(){
-            return Driver.Instance.FindElement(By.Id("icon-edit-pages")) != null;
+            //return Driver.Instance.FindElement(By.Id("icon-edit-pages")) != null;
+            var h2s = Driver.Instance.FindElements(By.TagName("h2"));
+            if (h2s.Count > 0)
+                return h2s[0].Text == "Edit Page Add New";
+
+            return false;
         }
 
         public static string Title{
@@ -58,7 +60,7 @@ namespace WordPressAutomation {
             Driver.Instance.SwitchTo().DefaultContent();
 
             // happens async above, so wait
-            Thread.Sleep(1000);
+            Driver.Wait(TimeSpan.FromSeconds(1));
 
             Driver.Instance.FindElement(By.Id("publish")).Click();
         }

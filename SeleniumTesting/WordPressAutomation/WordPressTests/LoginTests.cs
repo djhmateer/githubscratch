@@ -3,25 +3,10 @@ using WordPressAutomation;
 
 namespace WordPressTests {
     [TestClass]
-    public class LoginTests {
-        [TestInitialize]
-        public void Init() {
-            // Singleton to make writing tests easier
-            Driver.Initialize();
-        }
-
+    public class LoginTests : WordpressTest {
         [TestMethod]
         public void Admin_User_Can_Login() {
-            LoginPage.GoTo();
-            LoginPage.LoginAs("dave").WithPassword("letmein").Login();
-
             Assert.IsTrue(DashboardPage.IsAt, "Failed to login");
-        }
-
-        [TestCleanup]
-        public void CleanUp() {
-            // Using our Driver class, so don't have to talk to IWebDriver directly (which has a Close method)
-            Driver.Close();
         }
     }
 }

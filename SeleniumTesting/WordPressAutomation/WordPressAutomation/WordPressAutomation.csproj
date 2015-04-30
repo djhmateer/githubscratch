@@ -50,6 +50,7 @@
   <ItemGroup>
     <Compile Include="DashboardPage.cs" />
     <Compile Include="Driver.cs" />
+    <Compile Include="LeftNavigation.cs" />
     <Compile Include="ListPostsPage.cs" />
     <Compile Include="LoginPage.cs" />
     <Compile Include="NewPostPage.cs" />

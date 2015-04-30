@@ -3,8 +3,7 @@
 namespace WordPressAutomation {
     public class LoginPage {
         public static void GoTo() {
-            //Driver.Instance.Navigate().GoToUrl("http://localhost:46780/wp-login.php"); // work
-            Driver.Instance.Navigate().GoToUrl("http://localhost:19461/wp-login.php"); // home
+            Driver.Instance.Navigate().GoToUrl(Driver.BaseAddress + "wp-login.php"); 
         }
 
         public static LoginCommand LoginAs(string userName) {
