@@ -1,5 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using WordPressAutomation;
+using WordPressAutomation.Workflows;
 
 namespace WordPressTests.PostsTests {
     [TestClass]
@@ -18,20 +19,17 @@ namespace WordPressTests.PostsTests {
             ListPostsPage.StoreCount();
 
             // Add a new post
-            NewPostPage.GoTo();
-            NewPostPage.CreatePost("Added posts show up, title")
-                .WithBody("Added posts show up, body")
-                .Publish();
+            PostCreator.CreatePost();
 
             // Check for count
             ListPostsPage.GoTo(PostType.Posts);
             Assert.AreEqual(ListPostsPage.PreviousPostCount + 1, ListPostsPage.CurrentPostCount, "Count is wrong of posts on page");
 
             // Check for added post
-            Assert.IsTrue(ListPostsPage.DoesPostExistWithTitle("Added posts show up, title"));
+            Assert.IsTrue(ListPostsPage.DoesPostExistWithTitle(PostCreator.PreviousTitle));
 
             // Trash post (clean up)
-            ListPostsPage.TrashPost("Added posts show up, title");
+            ListPostsPage.TrashPost(PostCreator.PreviousTitle);
             Assert.AreEqual(ListPostsPage.PreviousPostCount, ListPostsPage.CurrentPostCount, "Couldn't trash post");
         }
 
@@ -56,4 +54,6 @@ namespace WordPressTests.PostsTests {
             ListPostsPage.TrashPost("Searching posts, title");
         }
     }
+
+    
 }

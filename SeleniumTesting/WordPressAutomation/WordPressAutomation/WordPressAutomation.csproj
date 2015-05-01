@@ -57,6 +57,7 @@
     <Compile Include="Pages\NewPostPage.cs" />
     <Compile Include="Pages\PostPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Workflows\PostCreator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
