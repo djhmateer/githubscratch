@@ -48,13 +48,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DashboardPage.cs" />
-    <Compile Include="Driver.cs" />
-    <Compile Include="LeftNavigation.cs" />
-    <Compile Include="ListPostsPage.cs" />
-    <Compile Include="LoginPage.cs" />
-    <Compile Include="NewPostPage.cs" />
-    <Compile Include="PostPage.cs" />
+    <Compile Include="Pages\DashboardPage.cs" />
+    <Compile Include="Selenium\Driver.cs" />
+    <Compile Include="Navigation\LeftNavigation.cs" />
+    <Compile Include="Pages\ListPostsPage.cs" />
+    <Compile Include="Pages\LoginPage.cs" />
+    <Compile Include="Navigation\MenuSelector.cs" />
+    <Compile Include="Pages\NewPostPage.cs" />
+    <Compile Include="Pages\PostPage.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -50,11 +50,12 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="CreatePostTests.cs" />
-    <Compile Include="LoginTests.cs" />
-    <Compile Include="PageTests.cs" />
+    <Compile Include="PostsTests\AllPostsTests.cs" />
+    <Compile Include="SmokeTests\CreatePostTests.cs" />
+    <Compile Include="SmokeTests\LoginTests.cs" />
+    <Compile Include="SmokeTests\PageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WordpressTest.cs" />
+    <Compile Include="Utilities\WordpressTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WordPressAutomation\WordPressAutomation.csproj">
