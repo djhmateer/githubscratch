@@ -13,14 +13,14 @@ namespace Ploeh.Samples.Encapsulation.CodeExamples
         //[Theory, AutoData]
         [Theory]
         [InlineData("test message")]
-        public void ReadReturnsMessage(string expected)
+        public void ReadReturnsMessage(string message)
         {
             var fileStore = new FileStore(Environment.CurrentDirectory);
-            fileStore.Save(44, expected);
+            fileStore.Save(44, message);
 
-            var actual = fileStore.Read(44);
+            Maybe<string> actual = fileStore.Read(44);
 
-            Assert.Equal(expected, actual.Single());
+            Assert.Equal(message, actual.Single());
         }
 
         //[Theory, AutoData]
