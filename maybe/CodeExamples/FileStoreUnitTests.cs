@@ -1,40 +1,40 @@
-﻿using Ploeh.AutoFixture.Xunit;
-using System;
+﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Ploeh.AutoFixture;
+using Ploeh.AutoFixture.Xunit2;
 using Xunit;
-//using Xunit.Extensions;
-//using Ploeh.AutoFixture.Xunit;
 
 namespace Ploeh.Samples.Encapsulation.CodeExamples
 {
     public class FileStoreUnitTests
     {
-        //[Theory, AutoData]
-        [Theory]
-        [InlineData("test message")]
-        public void ReadReturnsMessage(string message)
-        {
-            var fileStore = new FileStore(Environment.CurrentDirectory);
-            fileStore.Save(44, message);
+        ////[Theory, AutoData]
+        //[Theory]
+        //[InlineData("test message")]
+        //public void ReadReturnsMessage(string message)
+        //{
+        //    var fileStore = new FileStore(Environment.CurrentDirectory);
+        //    fileStore.Save(44, message);
 
-            Maybe<string> actual = fileStore.Read(44);
+        //    Maybe<string> actual = fileStore.Read(44);
 
-            Assert.Equal(message, actual.Single());
-        }
+        //    Assert.Equal(message, actual.Single());
+        //}
 
-        //[Theory, AutoData]
-        [Theory]
-        [InlineData(44)]
-        public void GetFileNameReturnsCorrectResult(int id)
-        {
-            var fileStore = new FileStore(Environment.CurrentDirectory);
+        ////[Theory, AutoData]
+        //[Theory]
+        //[InlineData(44)]
+        //public void GetFileNameReturnsCorrectResult(int id)
+        //{
+        //    var fileStore = new FileStore(Environment.CurrentDirectory);
 
-            string actual = fileStore.GetFileName(id);
+        //    string actual = fileStore.GetFileName(id);
 
-            var expected = Path.Combine(fileStore.WorkingDirectory, id + ".txt");
-            Assert.Equal(expected, actual);
-        }
+        //    var expected = Path.Combine(fileStore.WorkingDirectory, id + ".txt");
+        //    Assert.Equal(expected, actual);
+        //}
 
         [Fact]
         public void ConstructWithNullDirectoryThrows()
@@ -42,13 +42,19 @@ namespace Ploeh.Samples.Encapsulation.CodeExamples
             Assert.Throws<ArgumentNullException>(() => new FileStore(null));
         }
 
-        //[Theory, AutoData]
-        //public void ConstructWithInvalidDirectoryThrows(string invalidDirectory)
-        //{
-        //    Assert.False(Directory.Exists(invalidDirectory));
-        //    Assert.Throws<ArgumentException>(
-        //        () => new FileStore(invalidDirectory));
-        //}
+        [Theory, AutoData]
+        public void ConstructWithInvalidDirectoryThrows(string invalidDirectory)
+        {
+            Assert.False(Directory.Exists(invalidDirectory));
+            Assert.Throws<ArgumentException>(
+                () => new FileStore(invalidDirectory));
+        }
+
+        [Theory, AutoData]
+        public void IntroductoryTest(int expectedNumber)
+        {
+            Assert.Equal(1, 2);
+        }
 
         //[Theory, AutoData]
         //public void ReadUsageExample(string expected)
