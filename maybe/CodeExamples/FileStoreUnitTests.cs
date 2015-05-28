@@ -16,6 +16,9 @@ namespace Ploeh.Samples.Encapsulation.CodeExamples
             fileStore.Save(44, message);
 
             // An IEnumerable.. actually an array with 0 or 1 elements
+            // so it may, or may not, return a string
+            // guarantee will return the return type ie Maybe<string>
+            // will never be null
             Maybe<string> actual = fileStore.Read(44);
 
             Assert.Equal(message, actual.Single());

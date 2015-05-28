@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Ploeh.Samples.Encapsulation.CodeExamples
@@ -14,6 +15,10 @@ namespace Ploeh.Samples.Encapsulation.CodeExamples
 
         public Maybe(T value)
         {
+            // Guard clause to stop a null being inputted
+            if (value == null)
+                throw new ArgumentNullException("Cannot be null - use return new Maybe<string>()");
+
             this.values = new[] { value };
         }
 

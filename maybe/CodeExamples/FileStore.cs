@@ -28,7 +28,9 @@ namespace Ploeh.Samples.Encapsulation.CodeExamples
             var path = this.GetFileName(id);
             if (!File.Exists(path))
                 return new Maybe<string>();
+
             var message = File.ReadAllText(path);
+            // Never want message to be Null - that is what the previous step is for
             return new Maybe<string>(message);
         }
 
