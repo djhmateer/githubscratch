@@ -28,7 +28,7 @@ namespace MaybeTest2
         }
 
         // A Query.. Never return null.  Agree with team that null is not a valid value to return
-        // Maybe<T> is good for dealing with a value that is not present
+        // Maybe<T> is good for dealing with a value that may not present
         public Maybe<string> Read(int id)
         {
             var path = this.GetFileName(id);
