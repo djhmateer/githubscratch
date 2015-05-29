@@ -16,8 +16,8 @@ namespace MaybeTest2
 
             // An IEnumerable.. actually an array with 0 or 1 elements
             // so it may, or may not, return a string
-            // guarantee will return the return type ie Maybe<string>
-            // will never be null
+            // The guarantee is that it will return a Maybe<string>
+            // will never be null, so can chain like a DSL, and easier to read
             Maybe<string> actual = fileStore.Read(44);
             
             Assert.Equal(message, actual.Single());
