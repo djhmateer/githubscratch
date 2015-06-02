@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SerilogTest")]
+[assembly: AssemblyTitle("FileStoreTest4")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("SerilogTest")]
+[assembly: AssemblyProduct("FileStoreTest4")]
 [assembly: AssemblyCopyright("Copyright ©  2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("1f1153b9-a21c-4652-a9c9-9462f3e3b057")]
+[assembly: Guid("4a54c297-048f-4fb0-9e10-1a1cc260992c")]
 
 // Version information for an assembly consists of the following four values:
 //
