@@ -5,7 +5,7 @@ using System.IO;
 using System.Linq;
 using Xunit;
 
-namespace FileStoreTest4
+namespace Mateer.Samples.Encapsulation.CodeExamples
 {
     public class Tests
     {
@@ -24,7 +24,8 @@ namespace FileStoreTest4
         [Theory, AutoData]
         public void ReadReturnsMessage(string message)
         {
-            var fileStore = new FileStore(Environment.CurrentDirectory);
+            var fileStore = new FileStore(new DirectoryInfo(Environment.CurrentDirectory));
+
             fileStore.Save(44, message);
 
             // An IEnumerable.. actually an array with 0 or 1 elements
@@ -39,12 +40,12 @@ namespace FileStoreTest4
         [Theory, AutoData]
         public void GetFileNameReturnsCorrectResult(int id)
         {
-            var fileStore = new FileStore(Environment.CurrentDirectory);
+            var fileStore = new FileStore(new DirectoryInfo(Environment.CurrentDirectory));
 
-            string actual = fileStore.GetFileName(id);
+            FileInfo actual = fileStore.GetFileInfo(id);
 
-            var expected = Path.Combine(fileStore.WorkingDirectory, id + ".txt");
-            Assert.Equal(expected, actual);
+            var expected = new FileInfo(Path.Combine(fileStore.WorkingDirectory.FullName, id + ".txt"));
+            Assert.Equal(expected.FullName, actual.FullName);
         }
 
         [Fact]
@@ -58,13 +59,14 @@ namespace FileStoreTest4
         {
             Assert.False(Directory.Exists(invalidDirectory));
             Assert.Throws<ArgumentException>(
-                () => new FileStore(invalidDirectory));
+                () => new FileStore(new DirectoryInfo(invalidDirectory)));
         }
 
         [Theory, AutoData]
         public void ReadUsageExample(string expected)
         {
-            var fileStore = new FileStore(Environment.CurrentDirectory);
+            var fileStore = new FileStore(new DirectoryInfo(Environment.CurrentDirectory));
+
             fileStore.Save(49, expected);
 
             // Maybe<string> would be there if not DefaultIfEmpty and Single
@@ -77,7 +79,8 @@ namespace FileStoreTest4
         [Theory, AutoData]
         public void ReadExistingFileReturnsTrue(string expected)
         {
-            var fileStore = new FileStore(Environment.CurrentDirectory);
+            var fileStore = new FileStore(new DirectoryInfo(Environment.CurrentDirectory));
+
             fileStore.Save(50, expected);
 
             Maybe<string> actual = fileStore.Read(50);
@@ -91,7 +94,7 @@ namespace FileStoreTest4
         [Theory, AutoData]
         public void ReadNonExistingFileReturnsFalse(string expected)
         {
-            var fileStore = new FileStore(Environment.CurrentDirectory);
+            var fileStore = new FileStore(new DirectoryInfo(Environment.CurrentDirectory));
 
             Maybe<string> actual = fileStore.Read(51);
 

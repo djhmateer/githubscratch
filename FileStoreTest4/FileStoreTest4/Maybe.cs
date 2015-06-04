@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace FileStoreTest4
+namespace Mateer.Samples.Encapsulation.CodeExamples
 {
     public class Maybe<T> : IEnumerable<T>
     {
