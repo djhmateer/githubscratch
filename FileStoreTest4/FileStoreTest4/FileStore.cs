@@ -11,7 +11,7 @@ namespace FileStoreTest4
         {
             // Fail fast.. so can't have an invalid state of no working directory
             if (workingDirectory == null)
-                throw new ArgumentNullException("There must be a working Directory passed to save to!");
+                throw new ArgumentNullException("There must be a working directory passed to save to");
             if (!Directory.Exists(workingDirectory))
                 throw new ArgumentException("The workingDirectory must exist", "workingDirectory");
 
