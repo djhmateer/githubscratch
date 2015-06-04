@@ -42,10 +42,9 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
         {
             var fileStore = new FileStore(new DirectoryInfo(Environment.CurrentDirectory));
 
-            FileInfo actual = fileStore.GetFileInfo(id);
-
+            FileInfo fileInfo = fileStore.GetFileInfo(id);
             var expected = new FileInfo(Path.Combine(fileStore.WorkingDirectory.FullName, id + ".txt"));
-            Assert.Equal(expected.FullName, actual.FullName);
+            Assert.Equal(expected.FullName, fileInfo.FullName);
         }
 
         [Fact]
