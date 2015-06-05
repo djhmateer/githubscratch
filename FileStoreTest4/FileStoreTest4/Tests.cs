@@ -10,7 +10,7 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
     public class Tests
     {
         [Fact]
-        public void Thing()
+        public void LogTest()
         {
             var log = new LoggerConfiguration()
                 .WriteTo.RollingFile(@"C:\Temp\Log-{Date}.txt")
