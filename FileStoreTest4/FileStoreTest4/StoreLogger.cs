@@ -2,31 +2,39 @@
 
 namespace Mateer.Samples.Encapsulation.CodeExamples
 {
-    public class StoreLogger
-    {
+    public class StoreLogger{
+        private ILogger log;
+
+        public StoreLogger(){
+            log = new LoggerConfiguration()
+               .WriteTo
+               .File(@"C:\Temp\Log.txt")
+               //.RollingFile(@"C:\Temp\Log-{Date}.txt")
+               .CreateLogger();
+        }
         public void Saving(int id)
         {
-            Log.Information("Saving message {id}.", id);
+            log.Information("Saving message {id}.", id);
         }
 
         public void Saved(int id)
         {
-            Log.Information("Saved message {id}.", id);
+            log.Information("Saved message {id}.", id);
         }
 
         public void Reading(int id)
         {
-            Log.Debug("Reading message {id}.", id);
+            log.Debug("Reading message {id}.", id);
         }
 
         public void DidNotFind(int id)
         {
-            Log.Debug("No message {id} found.", id);
+            log.Debug("No message {id} found.", id);
         }
 
         public void Returning(int id)
         {
-            Log.Debug("Returning message {id}.", id);
+            log.Debug("Returning message {id}.", id);
         }
     }
 }

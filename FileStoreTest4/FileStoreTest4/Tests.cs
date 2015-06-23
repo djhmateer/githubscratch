@@ -10,6 +10,11 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
     public class Tests
     {
         [Fact]
+        public void OverallTest(){
+            
+        }
+
+        [Fact]
         public void LogTest()
         {
             var log = new LoggerConfiguration()
@@ -21,17 +26,19 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
             Assert.Equal(2, 2);
         }
 
+
+
         [Theory, AutoData]
         public void ReadReturnsMessage(string message)
         {
-            var fileStore = new FileStore(new DirectoryInfo(Environment.CurrentDirectory));
+            var fileStore = new MessageStore(new DirectoryInfo(Environment.CurrentDirectory));
 
             fileStore.Save(44, message);
 
             // An IEnumerable.. actually an array with 0 or 1 elements
             // so it may, or may not, return a string
             // The guarantee is that it will return a Maybe<string>
-            // will never be null, so can chain like, and easier to read
+            // will never be null, so can chain and easier to read
             Maybe<string> actual = fileStore.Read(44);
 
             Assert.Equal(message, actual.Single());
@@ -40,7 +47,7 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
         [Theory, AutoData]
         public void GetFileNameReturnsCorrectResult(int id)
         {
-            var fileStore = new FileStore(new DirectoryInfo(Environment.CurrentDirectory));
+            var fileStore = new MessageStore(new DirectoryInfo(Environment.CurrentDirectory));
 
             FileInfo fileInfo = fileStore.GetFileInfo(id);
             var expected = new FileInfo(Path.Combine(fileStore.WorkingDirectory.FullName, id + ".txt"));
@@ -50,7 +57,7 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
         [Fact]
         public void ConstructWithNullDirectoryThrows()
         {
-            Assert.Throws<ArgumentNullException>(() => new FileStore(null));
+            Assert.Throws<ArgumentNullException>(() => new MessageStore(null));
         }
 
         [Theory, AutoData]
@@ -58,13 +65,13 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
         {
             Assert.False(Directory.Exists(invalidDirectory));
             Assert.Throws<ArgumentException>(
-                () => new FileStore(new DirectoryInfo(invalidDirectory)));
+                () => new MessageStore(new DirectoryInfo(invalidDirectory)));
         }
 
         [Theory, AutoData]
         public void ReadUsageExample(string expected)
         {
-            var fileStore = new FileStore(new DirectoryInfo(Environment.CurrentDirectory));
+            var fileStore = new MessageStore(new DirectoryInfo(Environment.CurrentDirectory));
 
             fileStore.Save(49, expected);
 
@@ -78,7 +85,7 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
         [Theory, AutoData]
         public void ReadExistingFileReturnsTrue(string expected)
         {
-            var fileStore = new FileStore(new DirectoryInfo(Environment.CurrentDirectory));
+            var fileStore = new MessageStore(new DirectoryInfo(Environment.CurrentDirectory));
 
             fileStore.Save(50, expected);
 
@@ -93,7 +100,7 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
         [Theory, AutoData]
         public void ReadNonExistingFileReturnsFalse(string expected)
         {
-            var fileStore = new FileStore(new DirectoryInfo(Environment.CurrentDirectory));
+            var fileStore = new MessageStore(new DirectoryInfo(Environment.CurrentDirectory));
 
             Maybe<string> actual = fileStore.Read(51);
 

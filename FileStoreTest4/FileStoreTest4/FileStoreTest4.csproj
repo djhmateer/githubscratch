@@ -75,7 +75,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileStore.cs" />
+    <Compile Include="MessageStore.cs" />
     <Compile Include="Maybe.cs" />
+    <Compile Include="StoreCache.cs" />
     <Compile Include="StoreLogger.cs" />
     <Compile Include="Tests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
