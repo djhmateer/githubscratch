@@ -1,6 +1,7 @@
 ﻿using Ploeh.AutoFixture.Xunit2;
 using Serilog;
 using System;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using Xunit;
@@ -10,36 +11,56 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
     public class Tests
     {
         [Fact]
-        public void OverallTest(){
+        public void ConcurrentDictTest(){
+            var dict = new ConcurrentDictionary<int, string>();
+            // add key 1 value thing1 to the dictionary, or update key1 to thing1
+            dict.AddOrUpdate(1, "thing1", (i,s) => "thing1");
+            dict.AddOrUpdate(2, "thing2", (i,s) => "thing2");
+            dict.AddOrUpdate(1, "thing1", (i,s) => "thingUpdated");
+
+            // get a value from the dict, and if not there will insert
+            // useful for caching!
+            // 1 is there, so doesn't need to get its value
+            // call the delegate to get the value
+
+            // lambda expression
+            var result = dict.GetOrAdd(1, _ => Something(1));
+            // lambda expression
+            var result8 = dict.GetOrAdd(8, i => "hello" + i);
+
+            // an anonymous method
+            var result3 = dict.GetOrAdd(3, delegate { return Something(3); });
+
+            var result4 = dict.GetOrAdd(4, arg => Something(3));
+            // It recognises the signature, so don't need to pass the 5
+            var result5 = dict.GetOrAdd(5, ValueFactory);
+            // could pass the value anyway
+            var result6 = dict.GetOrAdd(6, ValueFactory(6));
+            var result7 = dict.GetOrAdd(7, Something);
+
             
         }
 
-        [Fact]
-        public void LogTest()
-        {
-            var log = new LoggerConfiguration()
-                .WriteTo.RollingFile(@"C:\Temp\Log-{Date}.txt")
-                .CreateLogger();
-
-            log.Information("test");
-
-            Assert.Equal(2, 2);
+        private string ValueFactory(int i){
+            return "hello again " + i;
         }
 
-
+        private string Something(int i){
+            return "hello";
+        }
 
         [Theory, AutoData]
         public void ReadReturnsMessage(string message)
         {
-            var fileStore = new MessageStore(new DirectoryInfo(Environment.CurrentDirectory));
+            var messageStore = new MessageStore(new DirectoryInfo(Environment.CurrentDirectory));
 
-            fileStore.Save(44, message);
+            messageStore.Save(44, message);
 
             // An IEnumerable.. actually an array with 0 or 1 elements
             // so it may, or may not, return a string
             // The guarantee is that it will return a Maybe<string>
             // will never be null, so can chain and easier to read
-            Maybe<string> actual = fileStore.Read(44);
+            Maybe<string> actual = messageStore.Read(44);
 
             Assert.Equal(message, actual.Single());
         }
@@ -112,5 +133,17 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
             string message = actual.DefaultIfEmpty("").Single();
             Assert.Equal("", message);
         }
+
+        //[Fact]
+        //public void LogTest()
+        //{
+        //    var log = new LoggerConfiguration()
+        //        .WriteTo.RollingFile(@"C:\Temp\Log-{Date}.txt")
+        //        .CreateLogger();
+
+        //    log.Information("test");
+
+        //    Assert.Equal(2, 2);
+        //}
     }
 }

@@ -6,35 +6,42 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
         private ILogger log;
 
         public StoreLogger(){
-            log = new LoggerConfiguration()
-               .WriteTo
-               .File(@"C:\Temp\Log.txt")
-               //.RollingFile(@"C:\Temp\Log-{Date}.txt")
-               .CreateLogger();
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo
+                .RollingFile(@"c:\temp\log.txt")
+                // When I run the app multiple times (as in tests) it overwrites the file..
+                //.File(@"C:\Temp\Log.txt")
+                .CreateLogger();
+
+            //log = new LoggerConfiguration()
+            //   .WriteTo
+            //   .File(@"C:\Temp\Log.txt")
+            //   //.RollingFile(@"C:\Temp\Log-{Date}.txt")
+            //   .CreateLogger();
         }
         public void Saving(int id)
         {
-            log.Information("Saving message {id}.", id);
+            Log.Information("Saving message {id}.", id);
         }
 
         public void Saved(int id)
         {
-            log.Information("Saved message {id}.", id);
+            Log.Information("Saved message {id}.", id);
         }
 
         public void Reading(int id)
         {
-            log.Debug("Reading message {id}.", id);
+            Log.Information("Reading message {id}.", id);
         }
 
         public void DidNotFind(int id)
         {
-            log.Debug("No message {id} found.", id);
+            Log.Information("No message {id} found.", id);
         }
 
         public void Returning(int id)
         {
-            log.Debug("Returning message {id}.", id);
+            Log.Information("Returning message {id}.", id);
         }
     }
 }

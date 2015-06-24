@@ -28,7 +28,6 @@ namespace Mateer.Samples.Encapsulation.CodeExamples{
         // A Command (returns void)
         public void Save(int id, string message){
             this.log.Saving(id);
-            Log.Information("Saving message {id}", id);
             var file = this.GetFileInfo(id);
             this.fileStore.WriteAllText(file.FullName, message);
             this.cache.AddOrUpdate(id, message);
@@ -43,8 +42,13 @@ namespace Mateer.Samples.Encapsulation.CodeExamples{
             if (!file.Exists)
                 return new Maybe<string>();
 
+            //var message = this.cache.GetOrAdd(
+            //    id, _ => this.fileStore.ReadAllText(file.FullName));
+
             var message = this.cache.GetOrAdd(
-                id, _ => this.fileStore.ReadAllText(file.FullName));
+                id, arg => this.fileStore.ReadAllText(file.FullName));
+
+
             // Never want message to be Null - that is what the previous step is for
             this.log.Returning(id);
             return new Maybe<string>(message);
