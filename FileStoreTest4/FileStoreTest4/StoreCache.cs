@@ -20,7 +20,6 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
 
         // A Function that takes an int and returns a string
         // the signature of the ConcurrentDictioary GetOrAdd method
-
         public string GetOrAdd(int id, Func<int, string> messageFactory)
         {
             return this.cache.GetOrAdd(id, messageFactory);

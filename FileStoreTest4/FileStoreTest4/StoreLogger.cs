@@ -19,27 +19,27 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
             //   //.RollingFile(@"C:\Temp\Log-{Date}.txt")
             //   .CreateLogger();
         }
-        public void Saving(int id)
+        public virtual void Saving(int id)
         {
             Log.Information("Saving message {id}.", id);
         }
 
-        public void Saved(int id)
+        public virtual void Saved(int id)
         {
             Log.Information("Saved message {id}.", id);
         }
 
-        public void Reading(int id)
+        public virtual void Reading(int id)
         {
             Log.Information("Reading message {id}.", id);
         }
 
-        public void DidNotFind(int id)
+        public virtual void DidNotFind(int id)
         {
             Log.Information("No message {id} found.", id);
         }
 
-        public void Returning(int id)
+        public virtual void Returning(int id)
         {
             Log.Information("Returning message {id}.", id);
         }
