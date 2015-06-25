@@ -10,7 +10,7 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
         public DirectoryInfo WorkingDirectory { get; private set; }
         private StoreLogger log;
         private StoreCache cache;
-        private FileStore fileStore;
+        private IStore store;
 
         // Strong indication that MessageStore cannot work without a workingDirectory
         // this is a pre-condition of the class
@@ -25,35 +25,35 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
             this.WorkingDirectory = workingDirectory;
             this.log = new StoreLogger();
             this.cache = new StoreCache();
-            this.fileStore = new FileStore();
+            this.store = new FileStore();
         }
 
         // A Command (returns void)
         public void Save(int id, string message)
         {
-            this.Log.Saving(id);
+            this.log.Saving(id);
             var file = this.GetFileInfo(id);
-            this.Store.WriteAllText(file.FullName, message);
-            this.Cache.AddOrUpdate(id, message);
-            this.Log.Saved(id);
+            this.store.WriteAllText(file.FullName, message);
+            this.cache.AddOrUpdate(id, message);
+            this.log.Saved(id);
         }
 
         // A Query.. Never return null.  Agree with team that null is not a valid value to return
         // Maybe<T> is good for dealing with a value that may not present
         public Maybe<string> Read(int id)
         {
-            this.Log.Reading(id);
+            this.log.Reading(id);
             var file = this.GetFileInfo(id);
             if (!file.Exists)
                 return new Maybe<string>();
 
             // Gets message from the cache, or if not there, gets then adds it
-            var message = this.Cache.GetOrAdd(
-                id, arg => this.Store.ReadAllText(file.FullName));
+            var message = this.cache.GetOrAdd(
+                id, arg => this.store.ReadAllText(file.FullName));
 
 
             // Never want message to be Null - that is what the previous step is for
-            this.Log.Returning(id);
+            this.log.Returning(id);
             return new Maybe<string>(message);
         }
 
@@ -62,26 +62,10 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
         {
             // This can never be null as int is a value type, and workingDirectory is a pre-condition
             // talking to the virtual Property now (which can be overridden)
-            return this.Store.GetFileInfo(
+            return this.store.GetFileInfo(
                 id, this.WorkingDirectory.FullName);
         }
 
-        // Factory readable properties (compiles to a method)
-        // virtual means can be overridden
-        protected virtual FileStore Store
-        {
-            get { return this.fileStore; }
-        }
-
-        protected virtual StoreCache Cache
-        {
-            get { return this.cache; }
-        }
-
-        protected virtual StoreLogger Log
-        {
-            get { return this.log; }
-        }
     }
 }
 
