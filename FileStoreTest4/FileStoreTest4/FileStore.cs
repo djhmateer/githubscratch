@@ -1,44 +1,66 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace Mateer.Samples.Encapsulation.CodeExamples
 {
-    public interface IStore{
-        void WriteAllText(string path, string message);
-        string ReadAllText(string path);
-        FileInfo GetFileInfo(int id, string workingDirectory);
+    public interface IStore
+    {
+        void WriteAllText(int id, string message);
+        Maybe<string> ReadAllText(int id);
+        FileInfo GetFileInfo(int id);
     }
 
-    public class FileStore : IStore{
-        public virtual void WriteAllText(string path, string message)
+    public class FileStore : IStore
+    {
+        private DirectoryInfo workingDirectory;
+
+        public FileStore(DirectoryInfo workingDirectory)
         {
+            if (workingDirectory == null)
+                throw new ArgumentNullException("workingDirectory");
+            if (!workingDirectory.Exists)
+                throw new ArgumentException("Boo", "workingDirectory");
+
+            this.workingDirectory = workingDirectory;
+        }
+
+        public virtual void WriteAllText(int id, string message)
+        {
+            var path = this.GetFileInfo(id).FullName;
             File.WriteAllText(path, message);
         }
 
-        public virtual string ReadAllText(string path)
+        public virtual Maybe<string> ReadAllText(int id)
         {
-            return File.ReadAllText(path);
+            var file = this.GetFileInfo(id);
+            if (!file.Exists)
+                return new Maybe<string>();
+            var path = file.FullName;
+            return new Maybe<string>(File.ReadAllText(path));
         }
 
-        public virtual FileInfo GetFileInfo(int id, string workingDirectory)
+        public virtual FileInfo GetFileInfo(int id)
         {
             return new FileInfo(
-                Path.Combine(workingDirectory, id + ".txt"));
+                Path.Combine(this.workingDirectory.FullName, id + ".txt"));
         }
     }
 
     // SqlStore derives from FileStore.. strange 
     public class SqlStore : IStore
     {
-        public void WriteAllText(string path, string message){
+
+        public void WriteAllText(int id, string message){
             // Write to db
         }
 
-        public string ReadAllText(string path){
+        public Maybe<string> ReadAllText(int id){
             // read
-            return null;
+            return new Maybe<string>();
         }
 
-        public FileInfo GetFileInfo(int id, string workingDirectory){
+        public FileInfo GetFileInfo(int id)
+        {
             throw new System.NotSupportedException();
         }
     }
