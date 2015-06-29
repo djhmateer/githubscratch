@@ -2,7 +2,15 @@
 
 namespace Mateer.Samples.Encapsulation.CodeExamples
 {
-    public class StoreLogger{
+    public interface IStoreLogger{
+        void Saving(int id, string message);
+        void Saved(int id, string message);
+        void Reading(int id);
+        void DidNotFind(int id);
+        void Returning(int id);
+    }
+
+    public class StoreLogger : IStoreLogger{
         private ILogger log;
 
         public StoreLogger(){
@@ -19,12 +27,12 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
             //   //.RollingFile(@"C:\Temp\Log-{Date}.txt")
             //   .CreateLogger();
         }
-        public virtual void Saving(int id)
+        public virtual void Saving(int id, string message)
         {
             Log.Information("Saving message {id}.", id);
         }
 
-        public virtual void Saved(int id)
+        public virtual void Saved(int id, string message)
         {
             Log.Information("Saved message {id}.", id);
         }

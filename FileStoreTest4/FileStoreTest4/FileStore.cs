@@ -5,9 +5,8 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
 {
     public interface IStore
     {
-        void WriteAllText(int id, string message);
+        void Save(int id, string message);
         Maybe<string> ReadAllText(int id);
-        FileInfo GetFileInfo(int id);
     }
 
     public class FileStore : IStore
@@ -24,11 +23,12 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
             this.workingDirectory = workingDirectory;
         }
 
-        public virtual void WriteAllText(int id, string message)
+        public virtual void Save(int id, string message)
         {
             var path = this.GetFileInfo(id).FullName;
             File.WriteAllText(path, message);
         }
+
 
         public virtual Maybe<string> ReadAllText(int id)
         {
@@ -47,21 +47,4 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
     }
 
     // SqlStore derives from FileStore.. strange 
-    public class SqlStore : IStore
-    {
-
-        public void WriteAllText(int id, string message){
-            // Write to db
-        }
-
-        public Maybe<string> ReadAllText(int id){
-            // read
-            return new Maybe<string>();
-        }
-
-        public FileInfo GetFileInfo(int id)
-        {
-            throw new System.NotSupportedException();
-        }
-    }
 }

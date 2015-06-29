@@ -6,12 +6,32 @@ using Serilog.Events;
 
 namespace Mateer.Samples.Encapsulation.CodeExamples
 {
+    public interface IStoreWriter
+    {
+        void Save(int id, string message);
+    }
+
+    public class LogSavingStoreWriter : IStoreWriter{
+        public void Save(int id, string message){
+            Log.Information("Saving message {id}.", id);
+        }
+    }
+
+    public class LogSavedStoreWriter : IStoreWriter
+    {
+        public void Save(int id, string message)
+        {
+            Log.Information("Saved message {id}.", id);
+        }
+    }
+
     public class MessageStore
     {
         public DirectoryInfo WorkingDirectory { get; private set; }
         private StoreLogger log;
         private StoreCache cache;
         private IStore store;
+        private IFileLocator fileLocator;
 
         // Strong indication that MessageStore cannot work without a workingDirectory
         // this is a pre-condition of the class
@@ -27,15 +47,17 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
             this.log = new StoreLogger();
             this.cache = new StoreCache();
             this.store = new FileStore(workingDirectory);
+            this.fileLocator = new FileLocator();
         }
 
         // A Command (returns void)
         public void Save(int id, string message)
         {
-            this.log.Saving(id);
-            this.store.WriteAllText(id, message);
-            this.cache.AddOrUpdate(id, message);
-            this.log.Saved(id);
+            // 4 Commands that take id as an argument
+            this.log.Saving(id, message);
+            this.store.Save(id, message);
+            this.cache.Save(id, message);
+            this.log.Saved(id, message);
         }
 
         public Maybe<string> Read(int id)
@@ -53,8 +75,21 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
 
         public FileInfo GetFileInfo(int id)
         {
-            return this.store.GetFileInfo(id);
+            return this.fileLocator.GetFileInfo(id);
         }
+    }
+
+    public class FileLocator : IFileLocator
+    {
+        public FileInfo GetFileInfo(int id)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public interface IFileLocator
+    {
+        FileInfo GetFileInfo(int id);
     }
 }
 

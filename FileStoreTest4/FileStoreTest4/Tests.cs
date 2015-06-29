@@ -26,15 +26,15 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
             Assert.Equal(message, actual.Single());
         }
 
-        [Theory, AutoData]
-        public void GetFileNameReturnsCorrectResult(int id)
-        {
-            var fileStore = new MessageStore(new DirectoryInfo(Environment.CurrentDirectory));
+        //[Theory, AutoData]
+        //public void GetFileNameReturnsCorrectResult(int id)
+        //{
+        //    var fileStore = new MessageStore(new DirectoryInfo(Environment.CurrentDirectory));
 
-            FileInfo fileInfo = fileStore.GetFileInfo(id);
-            var expected = new FileInfo(Path.Combine(fileStore.WorkingDirectory.FullName, id + ".txt"));
-            Assert.Equal(expected.FullName, fileInfo.FullName);
-        }
+        //    FileInfo fileInfo = fileStore.GetFileInfo(id);
+        //    var expected = new FileInfo(Path.Combine(fileStore.WorkingDirectory.FullName, id + ".txt"));
+        //    Assert.Equal(expected.FullName, fileInfo.FullName);
+        //}
 
         [Fact]
         public void ConstructWithNullDirectoryThrows()

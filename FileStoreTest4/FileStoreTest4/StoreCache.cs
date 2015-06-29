@@ -5,7 +5,7 @@ using System.Linq;
 namespace Mateer.Samples.Encapsulation.CodeExamples
 {
     public interface IStoreCache{
-        void AddOrUpdate(int id, string message);
+        void Save(int id, string message);
         Maybe<string> GetOrAdd(int id, Func<int, Maybe<string>> messageFactory);
     }
 
@@ -17,7 +17,7 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
             this.cache = new ConcurrentDictionary<int, Maybe<string>>();
         }
 
-        public void AddOrUpdate(int id, string message)
+        public void Save(int id, string message)
         {
             var m = new Maybe<string>(message);
             // add key, value or update with int, string message
