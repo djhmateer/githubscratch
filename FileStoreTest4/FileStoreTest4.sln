@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStoreTest4", "FileStoreTest4\FileStoreTest4.csproj", "{181732F8-8F0D-4BBE-A74F-D806431806A7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "zClassLibrary2", "zClassLibrary2\zClassLibrary2.csproj", "{00D9ABC1-44CC-45FC-A7EF-75F101547C4A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{181732F8-8F0D-4BBE-A74F-D806431806A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{181732F8-8F0D-4BBE-A74F-D806431806A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{181732F8-8F0D-4BBE-A74F-D806431806A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00D9ABC1-44CC-45FC-A7EF-75F101547C4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00D9ABC1-44CC-45FC-A7EF-75F101547C4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00D9ABC1-44CC-45FC-A7EF-75F101547C4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00D9ABC1-44CC-45FC-A7EF-75F101547C4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

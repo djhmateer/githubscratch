@@ -6,11 +6,13 @@ using Serilog.Events;
 
 namespace Mateer.Samples.Encapsulation.CodeExamples
 {
+    // A role interface
     public interface IStoreWriter
     {
         void Save(int id, string message);
     }
 
+    // 2 intermediary steps below
     public class LogSavingStoreWriter : IStoreWriter{
         public void Save(int id, string message){
             Log.Information("Saving message {id}.", id);
