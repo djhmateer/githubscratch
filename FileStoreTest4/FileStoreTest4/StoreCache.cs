@@ -9,7 +9,7 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
         Maybe<string> GetOrAdd(int id, Func<int, Maybe<string>> messageFactory);
     }
 
-    public class StoreCache : IStoreCache{
+    public class StoreCache : IStoreCache, IStoreWriter{
         private ConcurrentDictionary<int, Maybe<string>> cache;
 
         public StoreCache()

@@ -13,8 +13,10 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
     }
 
     // 2 intermediary steps below
-    public class LogSavingStoreWriter : IStoreWriter{
-        public void Save(int id, string message){
+    public class LogSavingStoreWriter : IStoreWriter
+    {
+        public void Save(int id, string message)
+        {
             Log.Information("Saving message {id}.", id);
         }
     }
@@ -34,6 +36,7 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
         private StoreCache cache;
         private IStore store;
         private IFileLocator fileLocator;
+        private IStoreWriter writer;
 
         // Strong indication that MessageStore cannot work without a workingDirectory
         // this is a pre-condition of the class
@@ -47,19 +50,47 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
 
             this.WorkingDirectory = workingDirectory;
             this.log = new StoreLogger();
-            this.cache = new StoreCache();
-            this.store = new FileStore(workingDirectory);
+            var c = new StoreCache();
+            this.cache = c;
+            var fileStore = new FileStore(workingDirectory);
+            this.store = fileStore;
             this.fileLocator = new FileLocator();
+            // Deterministic order
+            this.writer = new CompositeStoreWriter(
+                new LogSavingStoreWriter(),
+                fileStore,
+                c,
+                new LogSavedStoreWriter());
+        }
+
+        public class CompositeStoreWriter : IStoreWriter
+        {
+            private IStoreWriter[] writers;
+
+            public CompositeStoreWriter(params IStoreWriter[] writers)
+            {
+                this.writers = writers;
+            }
+
+            public void Save(int id, string message)
+            {
+                foreach (var w in this.writers)
+                    w.Save(id, message);
+            }
         }
 
         // A Command (returns void)
         public void Save(int id, string message)
         {
             // 4 Commands that take id as an argument
-            this.log.Saving(id, message);
-            this.store.Save(id, message);
-            this.cache.Save(id, message);
-            this.log.Saved(id, message);
+            //this.log.Saving(id, message);
+            //this.store.Save(id, message);
+            //this.cache.Save(id, message);
+            //this.log.Saved(id, message);
+
+            // A factory property that returns an instance of IStoreWriter
+            // Calls the compositeWriters save
+            this.writer.Save(id, message);
         }
 
         public Maybe<string> Read(int id)

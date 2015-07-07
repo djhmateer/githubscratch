@@ -43,17 +43,17 @@ namespace zClassLibrary2
     {
         public void Something()
         {
-// An outer variable
-var workingDirectory = new DirectoryInfo(Environment.CurrentDirectory);
+            // An outer variable
+            var workingDirectory = new DirectoryInfo(Environment.CurrentDirectory);
 
-// This function 'closes over' or captures the workingDirectory
-Func<int, string> read = id =>
-{
-    var path = Path.Combine(
-        workingDirectory.FullName,
-        id + ".txt");
-    return File.ReadAllText(path);
-};
+            // This function 'closes over' or captures the workingDirectory
+            Func<int, string> read = id =>
+            {
+                var path = Path.Combine(
+                    workingDirectory.FullName,
+                    id + ".txt");
+                return File.ReadAllText(path);
+            };
         }
     }
 

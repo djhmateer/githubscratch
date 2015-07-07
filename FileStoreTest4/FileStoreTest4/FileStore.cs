@@ -9,7 +9,7 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
         Maybe<string> ReadAllText(int id);
     }
 
-    public class FileStore : IStore
+    public class FileStore : IStore, IStoreWriter
     {
         private DirectoryInfo workingDirectory;
 
