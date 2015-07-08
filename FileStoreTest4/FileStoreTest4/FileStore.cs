@@ -6,10 +6,10 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
     public interface IStore
     {
         void Save(int id, string message);
-        Maybe<string> ReadAllText(int id);
+        Maybe<string> Read(int id);
     }
 
-    public class FileStore : IStore, IStoreWriter
+    public class FileStore : IStore, IStoreWriter, IStoreReader, IFileLocator
     {
         private DirectoryInfo workingDirectory;
 
@@ -30,7 +30,7 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
         }
 
 
-        public virtual Maybe<string> ReadAllText(int id)
+        public virtual Maybe<string> Read(int id)
         {
             var file = this.GetFileInfo(id);
             if (!file.Exists)

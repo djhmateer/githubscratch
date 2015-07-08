@@ -1,8 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Serilog;
-using Serilog.Events;
 
 namespace Mateer.Samples.Encapsulation.CodeExamples
 {
@@ -10,23 +8,6 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
     public interface IStoreWriter
     {
         void Save(int id, string message);
-    }
-
-    // 2 intermediary steps below
-    public class LogSavingStoreWriter : IStoreWriter
-    {
-        public void Save(int id, string message)
-        {
-            Log.Information("Saving message {id}.", id);
-        }
-    }
-
-    public class LogSavedStoreWriter : IStoreWriter
-    {
-        public void Save(int id, string message)
-        {
-            Log.Information("Saved message {id}.", id);
-        }
     }
 
     public class MessageStore
@@ -37,73 +18,45 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
         private IStore store;
         private IFileLocator fileLocator;
         private IStoreWriter writer;
+        private IStoreReader reader;
 
-        // Strong indication that MessageStore cannot work without a workingDirectory
-        // this is a pre-condition of the class
         public MessageStore(DirectoryInfo workingDirectory)
         {
-            // Fail fast.. so can't have an invalid state of no working directory
             if (workingDirectory == null)
                 throw new ArgumentNullException("There must be a working directory passed to save to");
             if (!Directory.Exists(workingDirectory.FullName))
                 throw new ArgumentException("The workingDirectory must exist", "workingDirectory");
 
             this.WorkingDirectory = workingDirectory;
-            this.log = new StoreLogger();
-            var c = new StoreCache();
-            this.cache = c;
             var fileStore = new FileStore(workingDirectory);
+            // Applied decorator pattern to the StoreCache
+            // so when Save is called on the StoreCache
+            // it actually calls Save on the fileStore.. the 'base'
+            // before, as they both implement IStoreWriter
+
+            // same instance plays the role of writer and reader
+            var c = new StoreCache(fileStore, fileStore);
+            this.cache = c;
+            var l = new StoreLogger(c, c);
+            this.log = l;
+
             this.store = fileStore;
-            this.fileLocator = new FileLocator();
-            // Deterministic order
-            this.writer = new CompositeStoreWriter(
-                new LogSavingStoreWriter(),
-                fileStore,
-                c,
-                new LogSavedStoreWriter());
-        }
-
-        public class CompositeStoreWriter : IStoreWriter
-        {
-            private IStoreWriter[] writers;
-
-            public CompositeStoreWriter(params IStoreWriter[] writers)
-            {
-                this.writers = writers;
-            }
-
-            public void Save(int id, string message)
-            {
-                foreach (var w in this.writers)
-                    w.Save(id, message);
-            }
+            this.fileLocator = fileStore;
+            this.writer = l;
+            this.reader = l;
         }
 
         // A Command (returns void)
         public void Save(int id, string message)
         {
-            // 4 Commands that take id as an argument
-            //this.log.Saving(id, message);
-            //this.store.Save(id, message);
-            //this.cache.Save(id, message);
-            //this.log.Saved(id, message);
-
-            // A factory property that returns an instance of IStoreWriter
-            // Calls the compositeWriters save
+            // Calls the 'Russian doll' stack of Saves depending on what has been composed above
+            // log first, then cache, then FileStore
             this.writer.Save(id, message);
         }
 
         public Maybe<string> Read(int id)
         {
-            this.log.Reading(id);
-            // this.store.ReadAllText is the delegate
-            Maybe<string> message = this.cache.GetOrAdd(
-                id, arg => this.store.ReadAllText(id));
-            if (message.Any())
-                this.log.Returning(id);
-            else
-                this.log.DidNotFind(id);
-            return message;
+            return this.reader.Read(id);
         }
 
         public FileInfo GetFileInfo(int id)

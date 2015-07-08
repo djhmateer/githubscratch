@@ -8,7 +8,7 @@ namespace Mateer.Samples.Encapsulation.CodeExamples{
             // Write to db
         }
 
-        public Maybe<string> ReadAllText(int id){
+        public Maybe<string> Read(int id){
             // read
             return new Maybe<string>();
         }
