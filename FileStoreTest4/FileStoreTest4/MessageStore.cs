@@ -12,38 +12,24 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
 
     public class MessageStore
     {
-        public DirectoryInfo WorkingDirectory { get; private set; }
-        private StoreLogger log;
-        private StoreCache cache;
-        private IStore store;
+        // role interfaces, and class fields
         private IFileLocator fileLocator;
         private IStoreWriter writer;
         private IStoreReader reader;
 
-        public MessageStore(DirectoryInfo workingDirectory)
+        public MessageStore(IStoreWriter writer, IStoreReader reader, IFileLocator fileLocator)
         {
-            if (workingDirectory == null)
-                throw new ArgumentNullException("There must be a working directory passed to save to");
-            if (!Directory.Exists(workingDirectory.FullName))
-                throw new ArgumentException("The workingDirectory must exist", "workingDirectory");
+            // protecting invariance with guard clauses
+            if (writer == null)
+                throw new ArgumentNullException("fileLocator");
+            if (reader == null)
+                throw new ArgumentNullException("fileLocator");
+            if (fileLocator == null)
+                throw new ArgumentNullException("fileLocator");
 
-            this.WorkingDirectory = workingDirectory;
-            var fileStore = new FileStore(workingDirectory);
-            // Applied decorator pattern to the StoreCache
-            // so when Save is called on the StoreCache
-            // it actually calls Save on the fileStore.. the 'base'
-            // before, as they both implement IStoreWriter
-
-            // same instance plays the role of writer and reader
-            var c = new StoreCache(fileStore, fileStore);
-            this.cache = c;
-            var l = new StoreLogger(c, c);
-            this.log = l;
-
-            this.store = fileStore;
-            this.fileLocator = fileStore;
-            this.writer = l;
-            this.reader = l;
+            this.fileLocator = fileLocator;
+            this.writer = writer;
+            this.reader = reader;
         }
 
         // A Command (returns void)

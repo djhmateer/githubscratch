@@ -3,13 +3,13 @@ using System.IO;
 
 namespace Mateer.Samples.Encapsulation.CodeExamples
 {
-    public interface IStore
-    {
-        void Save(int id, string message);
-        Maybe<string> Read(int id);
-    }
+    //public interface IStore
+    //{
+    //    void Save(int id, string message);
+    //    Maybe<string> Read(int id);
+    //}
 
-    public class FileStore : IStore, IStoreWriter, IStoreReader, IFileLocator
+    public class FileStore : IFileLocator, IStoreWriter, IStoreReader
     {
         private DirectoryInfo workingDirectory;
 
@@ -23,14 +23,14 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
             this.workingDirectory = workingDirectory;
         }
 
-        public virtual void Save(int id, string message)
+        public void Save(int id, string message)
         {
             var path = this.GetFileInfo(id).FullName;
             File.WriteAllText(path, message);
         }
 
 
-        public virtual Maybe<string> Read(int id)
+        public Maybe<string> Read(int id)
         {
             var file = this.GetFileInfo(id);
             if (!file.Exists)
@@ -39,12 +39,10 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
             return new Maybe<string>(File.ReadAllText(path));
         }
 
-        public virtual FileInfo GetFileInfo(int id)
+        public FileInfo GetFileInfo(int id)
         {
             return new FileInfo(
                 Path.Combine(this.workingDirectory.FullName, id + ".txt"));
         }
     }
-
-    // SqlStore derives from FileStore.. strange 
 }

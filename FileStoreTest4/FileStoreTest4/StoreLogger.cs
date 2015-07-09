@@ -3,33 +3,16 @@ using Serilog;
 
 namespace Mateer.Samples.Encapsulation.CodeExamples
 {
-    public interface IStoreLogger
+    public class StoreLogger : IStoreWriter, IStoreReader
     {
-        void Saving(int id, string message);
-        void Saved(int id, string message);
-        void Reading(int id);
-        void DidNotFind(int id);
-        void Returning(int id);
-    }
-
-    public class StoreLogger : IStoreLogger, IStoreWriter, IStoreReader
-    {
+        private readonly ILogger log;
         private readonly IStoreWriter writer;
         private readonly IStoreReader reader;
 
-        public StoreLogger(IStoreWriter writer, IStoreReader reader){
+        public StoreLogger(ILogger log, IStoreWriter writer, IStoreReader reader){
+            this.log = log;
             this.writer = writer;
             this.reader = reader;
-        }
-
-        public Maybe<string> Read(int id){
-            Log.Information("Reading message {id}.", id);
-            var retVal = this.reader.Read(id);
-            if (retVal.Any())
-                Log.Information("Returning message {id}.", id);
-            else
-                Log.Information("No message {id} found.", id);
-            return retVal;
         }
 
         public void Save(int id, string message){
@@ -38,29 +21,14 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
             Log.Information("Saved message {id}.", id);
         }
 
-        public virtual void Saving(int id, string message)
-        {
-          
-        }
-
-        public virtual void Saved(int id, string message)
-        {
-            
-        }
-
-        public virtual void Reading(int id)
-        {
-            
-        }
-
-        public virtual void DidNotFind(int id)
-        {
-            
-        }
-
-        public virtual void Returning(int id)
-        {
-            
+        public Maybe<string> Read(int id){
+            this.log.Debug("Reading message {id}.", id);
+            var retVal = this.reader.Read(id);
+            if (retVal.Any())
+                this.log.Debug("Returning message {id}.", id);
+            else
+                this.log.Debug("No message {id} found.", id);
+            return retVal;
         }
     }
 }

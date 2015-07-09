@@ -4,11 +4,11 @@ using System.Linq;
 
 namespace Mateer.Samples.Encapsulation.CodeExamples
 {
-    public interface IStoreCache
-    {
-        void Save(int id, string message);
-        Maybe<string> Read(int id);
-    }
+    //public interface IStoreCache
+    //{
+    //    void Save(int id, string message);
+    //    Maybe<string> Read(int id);
+    //}
 
     public interface IStoreReader
     {
@@ -16,7 +16,7 @@ namespace Mateer.Samples.Encapsulation.CodeExamples
     }
 
     // IStore Writer is the role interface that defines the Save method
-    public class StoreCache : IStoreCache, IStoreWriter, IStoreReader
+    public class StoreCache : IStoreWriter, IStoreReader
     {
         private ConcurrentDictionary<int, Maybe<string>> cache;
         private readonly IStoreWriter writer;

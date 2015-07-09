@@ -34,9 +34,6 @@ namespace zClassLibrary2
                 id + ".txt");
             return File.ReadAllText(path);
         };
-
-
-
     }
 
     public class Thing

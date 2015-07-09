@@ -1,7 +1,7 @@
 ﻿using System.IO;
 
 namespace Mateer.Samples.Encapsulation.CodeExamples{
-    public class SqlStore : IStore
+    public class SqlStore 
     {
 
         public void Save(int id, string message){
